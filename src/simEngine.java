@@ -110,6 +110,13 @@ public class simEngine {
     private static void exportSimulation(String exportSim){
         //json in java https://www.tutorialspoint.com/json/json_java_example.htm
         //TODO implement export Simulation
+        JSONObject export = new JSONObject();
+        
+        obj.put("name", "foo");
+        obj.put("num", new Integer(100));
+        obj.put("balance", new Double(1000.21));
+        obj.put("is_vip", new Boolean(true));
+
     }
 
     /**
