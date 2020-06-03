@@ -4,10 +4,37 @@
   "amountOfAgents" : 1000,
   "nodes" : ["a", "b", "c", "d"],
   "edges" : [
-    { "a" : "b", "cost":  "0t+1"} ,
-    { "c" : "d", "cost":  "0t+1"} ,
-    { "a" : "c", "cost":  "0.01t+0"},
-    { "b" : "d", "cost":  "0.01t+0"},
-    { "b" : "c", "cost":  "0.0t+0"}
+    {
+      "connection": [
+        "a",
+        "b"
+      ],
+      "cost": "0t+1"
+    },
+    {
+      "connection": [
+        "c",
+        "d"
+      ],
+      "cost": "0t+1"
+    },
+    {
+      "connection": [
+        "a",
+        "c"
+      ],
+      "cost": "0.01t+0"
+    },
+    {
+      "connection": [
+        "b",
+        "d"
+      ],
+      "cost": "0.01t+0"
+    },
+    { "connection": [
+      "b",
+      "c"
+    ], "cost":  "0.0t+0"}
   ]
 }

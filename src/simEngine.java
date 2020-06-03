@@ -103,25 +103,14 @@ public class simEngine {
 
 
 
-    private static JSONObject finalExport;
 
     /**
      * This will export the simulation, s.t. the visualizer can use it
      */
-<<<<<<< HEAD
-    private static void exportSimulation(SimConfig simConfig, NetworkCostGraph ncgDone, String nameOfAgent) throws Exception {
+    private static void exportSimulation(SimConfig simConfig, NetworkCostGraph ncgDone, String nameOfAgent, JSONObject out) throws Exception {
         //json in java https://www.tutorialspoint.com/json/json_java_example.htm
         //TODO implement export Simulation
         JSONObject export = new JSONObject();
-=======
-    private static void exportSimulation(String simulationName, SimConfig simConfig, Map<String, NetworkCostGraph> ncgDones) throws Exception {
-        for (String agentName: ncgDones.keySet()) {
-            //json in java https://www.tutorialspoint.com/json/json_java_example.htm
-            String exportName = simulationName + "_" + agentName;
-            NetworkCostGraph ncgDone = ncgDones.get(agentName);
-            //Actual export
-            JSONObject export = new JSONObject();
->>>>>>> 591bcb64390c381f3940f4f90ec31c37c6f8012e
 
             String[] nodes = simConfig.getNodes();
             JSONArray jsNodes = new JSONArray(nodes);
@@ -134,7 +123,6 @@ public class simEngine {
                 Integer[] iNodes = Arrays.stream(key.split(" ", 2)).map(o -> Integer.parseInt(o)).toArray(Integer[]::new);
                 Edge edge = entry.getValue();
 
-<<<<<<< HEAD
             JSONObject jsTemp = new JSONObject();
             jsTemp.put("cost", edge.getCostFct().toString());
             String[] c = {nodes[iNodes[0]], nodes[iNodes[1]]};
@@ -145,51 +133,28 @@ public class simEngine {
         }
         export.put("edges", jsEdges);
 
-        finalExport.put(nameOfAgent, export);
         System.out.println("Simulation of " + nameOfAgent + " is finished");
-
+        out.put(nameOfAgent, export);
     }
 
-    private static void exportSimulationsToFile(String exportName) throws Exception {
-        String filePath = "./networks/"+exportName+".json";
+    private static void exportSimulationsToFile(String exportName, JSONObject export) throws Exception {
+        String filePath = "./networks/" + exportName + "_out.json";
         FileWriter file;
         file = new FileWriter(filePath);
         try {
-            file.write(finalExport.toString());
+            file.write(export.toString());
         } catch (Exception e) {
             throw new Exception("Couldn't write to/create the following file: " + filePath);
         } finally {
-=======
-                JSONObject jsTemp = new JSONObject();
-                jsTemp.put("cost", edge.getCostFct().toString());
-                jsTemp.put(nodes[iNodes[0]], nodes[iNodes[1]]);
-                jsTemp.put("usage", edge.getAgents());
-                jsEdges.put(jsTemp);
-            }
-            export.put("edges", jsEdges);
-
-            String filePath = "./networks/finishedRuns/" + exportName + ".json";
-            FileWriter file;
-            file = new FileWriter(filePath);
->>>>>>> 591bcb64390c381f3940f4f90ec31c37c6f8012e
             try {
-                file.write(export.toString());
+                file.flush();
+                file.close();
             } catch (Exception e) {
-                throw new Exception("Couldn't write to/create the following file: " + filePath);
-            } finally {
-                try {
-                    file.flush();
-                    file.close();
-                } catch (Exception e) {
-                    throw new Exception("Couldn't complete the export to the following file: " + filePath);
-                }
+                throw new Exception("Couldn't complete the export to the following file: " + filePath);
             }
         }
-<<<<<<< HEAD
         System.out.println("Simulation \"" + exportName + "\" is finished and saved");
 
-=======
->>>>>>> 591bcb64390c381f3940f4f90ec31c37c6f8012e
     }
 
     /**
@@ -214,61 +179,51 @@ public class simEngine {
         return networkCostGraph;
     }
 
-<<<<<<< HEAD
-    private static void runSimulationForAgent(NetworkAgent networkAgent, SimConfig simConfig){
+    private static void runSimulationForAgent(NetworkAgent networkAgent, SimConfig simConfig, JSONObject out){
         System.out.println("Starting the simulation of " + networkAgent.getClass().getName() + "!");
         NetworkCostGraph ncgDone = runSimulation(simConfig, networkAgent);
         String agentName = networkAgent.getClass().getName();
         //TODO actually somehow return simulation result to export
         try {
-            exportSimulation(simConfig, ncgDone, agentName);
+            exportSimulation(simConfig, ncgDone, agentName, out);
         } catch (Exception e) {
             e.printStackTrace();
         }
-=======
-    private static NetworkCostGraph runSimulationForAgent(NetworkAgent networkAgent, final SimConfig simConfig){
-        System.out.println("Starting the simulation of " + networkAgent.getClass().getName() + "!");
-        NetworkCostGraph ncgDone = runSimulation(simConfig, networkAgent);
-        System.out.println("Simulation of " + networkAgent.getClass().getName() + " is finished!");
-        return ncgDone;
->>>>>>> 591bcb64390c381f3940f4f90ec31c37c6f8012e
+        
     }
 
     public static void main(String[] args) throws Exception {
         //TODO figure out a better way of changing networks/do all of them after each other
-        String simulation = "BrassParadox1";
+        String SimulationName = "Simulation";
+        String[] networks = {"BrassParadoxFast1", "BrassParadoxSlow1"};
+        NetworkAgent[] agents = {new SelfishRoutingAgent()};
+
         System.out.println("GameTheory simEngine started!");
-        SimConfig simConfig = null;
-        try {
-            simConfig = importSimulationConfiguration(simulation);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Loading of " + simulation + " config was not successful, exiting!");
-            System.exit(-1);
+        
+        JSONObject finalExport = new JSONObject();
+        for(String network: networks) {
+            JSONObject currentNetwork = new JSONObject();
+            SimConfig simConfig = null;
+            try {
+                simConfig = importSimulationConfiguration(network);
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("Loading of " + network + " config was not successful, exiting!");
+                System.exit(-1);
+            }
+            System.out.println("Loading of " + network +" config successful, running '" + simConfig.getNetTitle() + "'!");
+
+            for(NetworkAgent agent: agents) 
+                runSimulationForAgent(new SelfishRoutingAgent(), simConfig, currentNetwork);
+
+            finalExport.put(network, currentNetwork);
         }
-        System.out.println("Loading of " + simulation +" config successful, running '" + simConfig.getNetTitle() + "'!");
-<<<<<<< HEAD
 
-        finalExport = new JSONObject();
-        runSimulationForAgent(new SelfishRoutingAgent(), simConfig);
 
-        exportSimulationsToFile(simulation + "_out");
+        exportSimulationsToFile(SimulationName, finalExport);
         //TODO set the correct agents here!
         //runSimulationForAgent(new Agent2(), simConfig, simulation);
         //runSimulationForAgent(new Agent3(), simConfig, simulation);
-=======
-        Map<String, NetworkCostGraph> ncgDones = new HashMap<>();
-        ncgDones.put(SelfishRoutingAgent.class.getName(), runSimulationForAgent(new SelfishRoutingAgent(), simConfig));
-        //ncgDones.put(TaxedSelfishRoutingAgent.class.getName(), runSimulationForAgent(new TaxedSelfishRoutingAgent(), simConfig));
-        //ncgDones.put(CentralizedAgent.class.getName(), runSimulationForAgent(new CentralizedAgent(), simConfig));
-        try {
-            exportSimulation(simulation, simConfig, ncgDones);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(-2);
-        }
-        System.out.println("Export successful!");
->>>>>>> 591bcb64390c381f3940f4f90ec31c37c6f8012e
         System.out.println("GameTheory simEngine finished, exiting!");
     }
 }
