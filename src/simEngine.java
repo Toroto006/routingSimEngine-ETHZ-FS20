@@ -42,36 +42,34 @@ public class simEngine {
         HashMap<String, Integer> nodesMapped = createNodeMappingSI(nodes);
         NetworkGraph networkGraph = new NetworkGraph(vertices);
         //Now read the edges
+
         Pattern pattern = Pattern.compile("(\\d*\\.?\\d*)t\\+(\\d*\\.?\\d*)", Pattern.MULTILINE);
+
         for(Object o : jsonObject.getJSONArray("edges")) {
             if (!(o instanceof JSONObject))
                 throw new Exception("Decoding the json was not successful, edges are wrong/not given!");
             JSONObject edge = (JSONObject)o;
-            int i = 0, j = 0;
+            System.out.println(o.toString() + "\n");
+
+            
             CostFct c = null;
-            if (edge.keySet().size() != 2)
-                throw new Exception("At least one edge has not the correct amount of keys!");
-            for (Object k: edge.keySet() ) {
-                if (!(k instanceof String))
-                    throw new Exception("Decoding the json was not successful, edges do not have string keys!");
-                if (k.equals("cost")){
-                    String costFctStr = edge.getString((String)k);
-                    Matcher m = pattern.matcher(costFctStr);
-                    m.find();
-                    try {
-                        Float a = Float.valueOf(m.group(1));
-                        Float b = Float.valueOf(m.group(2));
-                        c = new LinearFct(a, b);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        throw new Exception("Something went wrong while decoding the linear function!");
-                    }
-                } else {
-                    //We have the name of a vertex
-                    i = nodesMapped.get(k);
-                    j = nodesMapped.get(edge.getString((String)k));
-                }
+            String costFctStr = edge.getString("cost");
+            System.out.println(edge.toString() + "\n");
+            Matcher m = pattern.matcher(costFctStr);
+            m.find();
+            try {
+                Float a = Float.valueOf(m.group(1));
+                Float b = Float.valueOf(m.group(2));
+                c = new LinearFct(a, b);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new Exception("Something went wrong while decoding the linear function!");
             }
+
+            JSONArray connections = edge.getJSONArray("connection");
+            int i = nodesMapped.get(connections.get(0));
+            int j = nodesMapped.get(connections.get(1));
+            
             //System.out.println("From " + i + " to " + j + " and c: " + c);
             networkGraph.addEdge(i, j, c);
         }
@@ -103,10 +101,14 @@ public class simEngine {
         return ret;
     }
 
+
+
+    private static JSONObject finalExport;
+
     /**
      * This will export the simulation, s.t. the visualizer can use it
      */
-    private static void exportSimulation(String exportName, SimConfig simConfig, NetworkCostGraph ncgDone) throws Exception {
+    private static void exportSimulation(SimConfig simConfig, NetworkCostGraph ncgDone, String nameOfAgent) throws Exception {
         //json in java https://www.tutorialspoint.com/json/json_java_example.htm
         //TODO implement export Simulation
         JSONObject export = new JSONObject();
@@ -124,17 +126,25 @@ public class simEngine {
 
             JSONObject jsTemp = new JSONObject();
             jsTemp.put("cost", edge.getCostFct().toString());
-            jsTemp.put(nodes[iNodes[0]], nodes[iNodes[1]]);
+            String[] c = {nodes[iNodes[0]], nodes[iNodes[1]]};
+            JSONArray connection = new JSONArray(c);
+            jsTemp.put("connection", connection);
             jsTemp.put("usage", edge.getAgents());
             jsEdges.put(jsTemp);
         }
         export.put("edges", jsEdges);
 
+        finalExport.put(nameOfAgent, export);
+        System.out.println("Simulation of " + nameOfAgent + " is finished");
+
+    }
+
+    private static void exportSimulationsToFile(String exportName) throws Exception {
         String filePath = "./networks/"+exportName+".json";
         FileWriter file;
         file = new FileWriter(filePath);
         try {
-            file.write(export.toString());
+            file.write(finalExport.toString());
         } catch (Exception e) {
             throw new Exception("Couldn't write to/create the following file: " + filePath);
         } finally {
@@ -145,6 +155,7 @@ public class simEngine {
                 throw new Exception("Couldn't complete the export to the following file: " + filePath);
             }
         }
+        System.out.println("Simulation \"" + exportName + "\" is finished and saved");
 
     }
 
@@ -171,22 +182,21 @@ public class simEngine {
         return networkCostGraph;
     }
 
-    private static void runSimulationForAgent(NetworkAgent networkAgent, SimConfig simConfig, String simulationName){
+    private static void runSimulationForAgent(NetworkAgent networkAgent, SimConfig simConfig){
         System.out.println("Starting the simulation of " + networkAgent.getClass().getName() + "!");
         NetworkCostGraph ncgDone = runSimulation(simConfig, networkAgent);
-        String exportSim = simulationName+"_" + networkAgent.getClass().getName();
+        String agentName = networkAgent.getClass().getName();
         //TODO actually somehow return simulation result to export
         try {
-            exportSimulation(exportSim, simConfig, ncgDone);
+            exportSimulation(simConfig, ncgDone, agentName);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("Simulation of " + networkAgent.getClass().getName() + " is finished and saved to " + exportSim + ".json");
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         //TODO figure out a better way of changing networks/do all of them after each other
-        String simulation = "TestNetwork1";
+        String simulation = "BrassParadox1";
         System.out.println("GameTheory simEngine started!");
         SimConfig simConfig = null;
         try {
@@ -197,7 +207,11 @@ public class simEngine {
             System.exit(-1);
         }
         System.out.println("Loading of " + simulation +" config successful, running '" + simConfig.getNetTitle() + "'!");
-        runSimulationForAgent(new SelfishRoutingAgent(), simConfig, simulation);
+
+        finalExport = new JSONObject();
+        runSimulationForAgent(new SelfishRoutingAgent(), simConfig);
+
+        exportSimulationsToFile(simulation + "_out");
         //TODO set the correct agents here!
         //runSimulationForAgent(new Agent2(), simConfig, simulation);
         //runSimulationForAgent(new Agent3(), simConfig, simulation);

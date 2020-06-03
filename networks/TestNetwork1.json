@@ -1,9 +1,18 @@
 {
-  "_comment": "The t in this network configuration is the total amount of agents on this edge at a given time.",
-  "networkTitle": "Test network t = 1 and costFct constant",
-  "amountOfAgents" : 1,
-  "nodes" : ["a", "b"],
-  "edges" : [
-    { "b" : "a", "cost":  "0t+1"}
-  ]
+    "_comment": "The t in this network configuration is the total amount of agents on this edge at a given time.",
+    "networkTitle": "Test network t = 1 and costFct constant",
+    "amountOfAgents": 1,
+    "nodes": [
+        "a",
+        "b"
+    ],
+    "edges": [
+        {
+            "connection": [
+                "a",
+                "b"
+            ],
+            "cost": "0.0*t+1.0"
+        }
+    ]
 }

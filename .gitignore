@@ -25,5 +25,5 @@ hs_err_pid*
 out
 /routingSimEngine.iml
 
-#VsCode settings#
-\src\.vscode
+# VsCode settings #
+*.vscode
