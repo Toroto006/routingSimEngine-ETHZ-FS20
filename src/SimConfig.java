@@ -17,4 +17,8 @@ public class SimConfig {
     public int getAmountOfAgents() {
         return amountOfAgents;
     }
+
+    public String getNetTitle() {
+        return networkTitle;
+    }
 }

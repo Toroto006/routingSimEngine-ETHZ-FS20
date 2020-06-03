@@ -2,13 +2,9 @@ import java.util.LinkedList;
 
 public class SelfishRoutingAgent implements NetworkAgent{
 
-    private NetworkGraph ng;
+    private NetworkCostGraph ncg;
     private  int cost [];
     private int predecessor[];
-
-    public SelfishRoutingAgent(NetworkGraph ng){
-        this.ng = ng;
-    }
 
     /**
      * Basically it applies a Dijkstra algo. on the network and gives the shortest path back
@@ -19,14 +15,15 @@ public class SelfishRoutingAgent implements NetworkAgent{
      * @return The optimal path from start node ([0][0] in matrix) to end node ([#nodes - 1][#nodes - 1] in matrix)
      */
     public LinkedList<Integer> agentDecide(NetworkCostGraph ncg, EdgeCosts ec, int decidedAgents) {
+        this.ncg = ncg;
         LinkedList<Integer> ret = new LinkedList<>();
 
         /* -- initialization -- */
-        cost = new int[ng.numVertices];
-        predecessor = new int[ng.numVertices];
+        cost = new int[this.ncg.numVertices];
+        predecessor = new int[this.ncg.numVertices];
         LinkedList<Integer> nodesLeft = new LinkedList<>();
 
-        for(int i = 0; i < ng.numVertices; i++){
+        for(int i = 0; i < this.ncg.numVertices; i++){
             cost[i] = Integer.MAX_VALUE;
             predecessor[i] = -1;
             nodesLeft.add(i);
@@ -43,7 +40,7 @@ public class SelfishRoutingAgent implements NetworkAgent{
                 }
             }
             nodesLeft.remove(u);
-            if(u == ng.numVertices - 1){
+            if(u == this.ncg.numVertices - 1){
                 nodesLeft.clear();
             }
             for (int v:nodesLeft
@@ -55,7 +52,7 @@ public class SelfishRoutingAgent implements NetworkAgent{
         }
 
         /* -- Backtracking -- */
-        int u = ng.numVertices - 1;
+        int u = this.ncg.numVertices - 1;
         ret.add(u);
         while(predecessor[u] >= 0){
             u = predecessor[u];
@@ -65,6 +62,8 @@ public class SelfishRoutingAgent implements NetworkAgent{
     }
 
     //TODO use NetworkCostGraph for the cost calculation or EdgeCosts?
+    //You should be able to use both, i.e. networkCostGraph is just more efficient,
+    // since we saved it there and we do not have to recalculate every time
     private void upadtaCost(int u, int v, EdgeCosts ec){
         int costs = cost[u] + ec.getEdgeCost(u, v);
         if(costs < cost[v]){

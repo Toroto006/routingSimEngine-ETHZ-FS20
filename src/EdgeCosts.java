@@ -20,8 +20,11 @@ public class EdgeCosts {
      * @param j to node
      * @param c the CostFct of this edge, given the number of agents on it
      */
-    public void addEdge(int i, int j, CostFct c) {
-        edges.put(createKey(i, j), new Edge(c));
+    public void addEdge(int i, int j, CostFct c) throws Exception {
+        String key = createKey(i, j);
+        if (edges.containsKey(key))
+            throw new Exception("The edge (" + i +", " + j + ") was already added!");
+        edges.put(key, new Edge(c));
     }
 
     /**

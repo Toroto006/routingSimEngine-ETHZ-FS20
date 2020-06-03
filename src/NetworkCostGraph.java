@@ -13,7 +13,7 @@ public class NetworkCostGraph extends NetworkGraph{
         super(networkGraph.numVertices);
         adjMatrix = new int[numVertices][numVertices];
         this.edgeCosts.copy(networkGraph.edgeCosts);
-        calculateNewCosts();
+        calculateAllCosts();
     }
 
     public int getLatencyCost(int i, int j) {
@@ -23,13 +23,12 @@ public class NetworkCostGraph extends NetworkGraph{
     /**
      * This function calculates all edgeCosts of the adjMatrix anew
      */
-    public void calculateNewCosts() {
+    public void calculateAllCosts() {
         for (int i = 0; i < numVertices; i++) {
             for (int j = 0; j < numVertices; j++) {
                 int val = Integer.MAX_VALUE;
-                if (existsEdge(i, j)) {
+                if (existsEdge(i, j))
                     val = edgeCosts.getEdgeCost(i, j);
-                }
                 adjMatrix[i][j] = val;
                 adjMatrix[j][i] = val;
             }
