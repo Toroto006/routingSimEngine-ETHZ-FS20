@@ -27,3 +27,6 @@ out
 /networks/finishedRuns/*
 .gradle/*
 gradle/*
+
+#VsCode settings#
+/src/.vscode/*
