@@ -106,7 +106,7 @@ public class simEngine {
     /**
      * This will export the simulation, s.t. the visualizer can use it
      */
-    private static void exportSimulation(String exportName, SimConfig simConfig) throws Exception {
+    private static void exportSimulation(String exportName, SimConfig simConfig, NetworkCostGraph ncgDone) throws Exception {
         //json in java https://www.tutorialspoint.com/json/json_java_example.htm
         //TODO implement export Simulation
         JSONObject export = new JSONObject();
@@ -116,7 +116,7 @@ public class simEngine {
         export.put("nodes", (Object)jsNodes);
 
         JSONArray jsEdges = new JSONArray();
-        Map<String, Edge> mapEdges = simConfig.getNetworkGraph().getEdges();
+        Map<String, Edge> mapEdges = ncgDone.getEdges();
         for(Map.Entry<String, Edge> entry : mapEdges.entrySet()) {
             String key = entry.getKey();
             Integer[] iNodes = Arrays.stream(key.split(" ", 2)).map(o -> Integer.parseInt(o)).toArray(Integer[]::new);
@@ -152,8 +152,9 @@ public class simEngine {
      * This runs the whole simulation for one agent
      * @param simConfig the configuration of the simulation
      * @param agent the agent to use for this simulation
+     * @return
      */
-    private static void runSimulation(SimConfig simConfig, NetworkAgent agent){
+    private static NetworkCostGraph runSimulation(SimConfig simConfig, NetworkAgent agent){
         NetworkCostGraph networkCostGraph = new NetworkCostGraph(simConfig.getNetworkGraph());
         networkCostGraph.calculateAllCosts();
         System.out.println("Start costMatrix:\n" + networkCostGraph.toString());
@@ -167,14 +168,19 @@ public class simEngine {
             //TODO somehow save the progress somewhere to then export simulation
             System.out.println(doneAgents + " done and current costMatrix:\n" + networkCostGraph.toString());
         }
+        return networkCostGraph;
     }
 
     private static void runSimulationForAgent(NetworkAgent networkAgent, SimConfig simConfig, String simulationName){
         System.out.println("Starting the simulation of " + networkAgent.getClass().getName() + "!");
-        runSimulation(simConfig, networkAgent);
+        NetworkCostGraph ncgDone = runSimulation(simConfig, networkAgent);
         String exportSim = simulationName+"_" + networkAgent.getClass().getName();
         //TODO actually somehow return simulation result to export
-        exportSimulation(exportSim, simConfig);
+        try {
+            exportSimulation(exportSim, simConfig, ncgDone);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         System.out.println("Simulation of " + networkAgent.getClass().getName() + " is finished and saved to " + exportSim + ".json");
     }
 
