@@ -24,4 +24,8 @@ public class Edge {
     public int getAgents() {
         return this.agents;
     }
+
+    public CostFct getCostFct() {
+        return costFct;
+    }
 }

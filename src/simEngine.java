@@ -105,41 +105,39 @@ public class simEngine {
 
     /**
      * This will export the simulation, s.t. the visualizer can use it
-     * @param exportSim
      */
-    private static void exportSimulation(String exportName, SimConfig simConfig){
+    private static void exportSimulation(String exportName, SimConfig simConfig) throws Exception {
         //json in java https://www.tutorialspoint.com/json/json_java_example.htm
         //TODO implement export Simulation
         JSONObject export = new JSONObject();
 
-        JSONArray jsNodes = new JSONArray(simConfig.nodes);
+        String[] nodes = simConfig.getNodes();
+        JSONArray jsNodes = new JSONArray(nodes);
         export.put("nodes", (Object)jsNodes);
 
         JSONArray jsEdges = new JSONArray();
-        Map<String, Edge> mapEdges = simConfig.networkGraph.edges
+        Map<String, Edge> mapEdges = simConfig.getNetworkGraph().getEdges();
         for(Map.Entry<String, Edge> entry : mapEdges.entrySet()) {
-            String key = entry.getKey()
-            int[] iNodes = key.split(" ", 2);
-            Edge edge = entry.getValue()
+            String key = entry.getKey();
+            Integer[] iNodes = Arrays.stream(key.split(" ", 2)).map(o -> Integer.parseInt(o)).toArray(Integer[]::new);
+            Edge edge = entry.getValue();
 
             JSONObject jsTemp = new JSONObject();
-            jsTemp.put("cost", edge.costFct.toString())
-            jsTemp.put(simConfig.nodes[iNodes[0]], simConfig.nodes[iNodes[1]])
-            jsTemp.put("usage", edge.getAgents())
-            jsEdges.put(jsTemp)
+            jsTemp.put("cost", edge.getCostFct().toString());
+            jsTemp.put(nodes[iNodes[0]], nodes[iNodes[1]]);
+            jsTemp.put("usage", edge.getAgents());
+            jsEdges.put(jsTemp);
         }
-        export.put("edges", jsEdges)
+        export.put("edges", jsEdges);
 
         String filePath = "./networks/"+exportName+".json";
         FileWriter file;
-
+        file = new FileWriter(filePath);
         try {
-            file = new FileWriter(filePath);
-            file.write(export.toJSONString());
+            file.write(export.toString());
         } catch (Exception e) {
             throw new Exception("Couldn't write to/create the following file: " + filePath);
         } finally {
- 
             try {
                 file.flush();
                 file.close();

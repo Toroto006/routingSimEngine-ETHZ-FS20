@@ -21,4 +21,8 @@ public class SimConfig {
     public String getNetTitle() {
         return networkTitle;
     }
+
+    public String[] getNodes() {
+        return nodes;
+    }
 }

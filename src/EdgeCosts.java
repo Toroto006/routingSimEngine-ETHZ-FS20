@@ -48,4 +48,8 @@ public class EdgeCosts {
     public void addAgent(int i, int j) {
         edges.get(createKey(i, j)).addAgent();
     }
+
+    public Map<String, Edge> getEdges() {
+        return edges;
+    }
 }

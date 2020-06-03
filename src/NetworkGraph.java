@@ -1,3 +1,5 @@
+import java.util.Map;
+
 public class NetworkGraph {
     protected int numVertices;
     protected final EdgeCosts edgeCosts;
@@ -51,5 +53,9 @@ public class NetworkGraph {
         if (!existsEdge(i, j))
             throw new IndexOutOfBoundsException("The given edge does not exist in this networkGraph!");
         edgeCosts.addAgent(i, j);
+    }
+
+    public Map<String,Edge> getEdges() {
+        return edgeCosts.getEdges();
     }
 }
