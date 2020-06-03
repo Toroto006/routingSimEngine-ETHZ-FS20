@@ -26,11 +26,12 @@ public class NetworkCostGraph extends NetworkGraph{
     public void calculateNewCosts() {
         for (int i = 0; i < numVertices; i++) {
             for (int j = 0; j < numVertices; j++) {
+                int val = Integer.MAX_VALUE;
                 if (existsEdge(i, j)) {
-                    int val = edgeCosts.getEdgeCost(i, j);
-                    adjMatrix[i][j] = val;
-                    adjMatrix[j][i] = val;
+                    val = edgeCosts.getEdgeCost(i, j);
                 }
+                adjMatrix[i][j] = val;
+                adjMatrix[j][i] = val;
             }
         }
     }
@@ -42,7 +43,10 @@ public class NetworkCostGraph extends NetworkGraph{
         for (int i = 0; i < numVertices; i++) {
             s.append(i).append(": ");
             for (int j : adjMatrix[i]) {
-                s.append(j).append(" ");
+                if (j == Integer.MAX_VALUE)
+                    s.append("∞ ");
+                else
+                    s.append(j).append(" ");
             }
             s.append("\n");
         }
