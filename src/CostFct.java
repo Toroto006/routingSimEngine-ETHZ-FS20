@@ -7,11 +7,4 @@ public interface CostFct {
      */
     public int getCost(int t);
 
-
-    /**
-     * It returns the string representation of the cost function
-     * @return the string version of the cost function 
-     */
-    public String toString();
-    // ToDo
 }
