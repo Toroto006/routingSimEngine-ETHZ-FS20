@@ -106,46 +106,49 @@ public class simEngine {
     /**
      * This will export the simulation, s.t. the visualizer can use it
      */
-    private static void exportSimulation(String exportName, SimConfig simConfig, NetworkCostGraph ncgDone) throws Exception {
-        //json in java https://www.tutorialspoint.com/json/json_java_example.htm
-        //TODO implement export Simulation
-        JSONObject export = new JSONObject();
+    private static void exportSimulation(String simulationName, SimConfig simConfig, Map<String, NetworkCostGraph> ncgDones) throws Exception {
+        for (String agentName: ncgDones.keySet()) {
+            //json in java https://www.tutorialspoint.com/json/json_java_example.htm
+            String exportName = simulationName + "_" + agentName;
+            NetworkCostGraph ncgDone = ncgDones.get(agentName);
+            //Actual export
+            JSONObject export = new JSONObject();
 
-        String[] nodes = simConfig.getNodes();
-        JSONArray jsNodes = new JSONArray(nodes);
-        export.put("nodes", (Object)jsNodes);
+            String[] nodes = simConfig.getNodes();
+            JSONArray jsNodes = new JSONArray(nodes);
+            export.put("nodes", (Object) jsNodes);
 
-        JSONArray jsEdges = new JSONArray();
-        Map<String, Edge> mapEdges = ncgDone.getEdges();
-        for(Map.Entry<String, Edge> entry : mapEdges.entrySet()) {
-            String key = entry.getKey();
-            Integer[] iNodes = Arrays.stream(key.split(" ", 2)).map(o -> Integer.parseInt(o)).toArray(Integer[]::new);
-            Edge edge = entry.getValue();
+            JSONArray jsEdges = new JSONArray();
+            Map<String, Edge> mapEdges = ncgDone.getEdges();
+            for (Map.Entry<String, Edge> entry : mapEdges.entrySet()) {
+                String key = entry.getKey();
+                Integer[] iNodes = Arrays.stream(key.split(" ", 2)).map(o -> Integer.parseInt(o)).toArray(Integer[]::new);
+                Edge edge = entry.getValue();
 
-            JSONObject jsTemp = new JSONObject();
-            jsTemp.put("cost", edge.getCostFct().toString());
-            jsTemp.put(nodes[iNodes[0]], nodes[iNodes[1]]);
-            jsTemp.put("usage", edge.getAgents());
-            jsEdges.put(jsTemp);
-        }
-        export.put("edges", jsEdges);
+                JSONObject jsTemp = new JSONObject();
+                jsTemp.put("cost", edge.getCostFct().toString());
+                jsTemp.put(nodes[iNodes[0]], nodes[iNodes[1]]);
+                jsTemp.put("usage", edge.getAgents());
+                jsEdges.put(jsTemp);
+            }
+            export.put("edges", jsEdges);
 
-        String filePath = "./networks/finishedRuns/"+exportName+".json";
-        FileWriter file;
-        file = new FileWriter(filePath);
-        try {
-            file.write(export.toString());
-        } catch (Exception e) {
-            throw new Exception("Couldn't write to/create the following file: " + filePath);
-        } finally {
+            String filePath = "./networks/finishedRuns/" + exportName + ".json";
+            FileWriter file;
+            file = new FileWriter(filePath);
             try {
-                file.flush();
-                file.close();
+                file.write(export.toString());
             } catch (Exception e) {
-                throw new Exception("Couldn't complete the export to the following file: " + filePath);
+                throw new Exception("Couldn't write to/create the following file: " + filePath);
+            } finally {
+                try {
+                    file.flush();
+                    file.close();
+                } catch (Exception e) {
+                    throw new Exception("Couldn't complete the export to the following file: " + filePath);
+                }
             }
         }
-
     }
 
     /**
@@ -171,22 +174,16 @@ public class simEngine {
         return networkCostGraph;
     }
 
-    private static void runSimulationForAgent(NetworkAgent networkAgent, final SimConfig simConfig, String simulationName){
+    private static NetworkCostGraph runSimulationForAgent(NetworkAgent networkAgent, final SimConfig simConfig){
         System.out.println("Starting the simulation of " + networkAgent.getClass().getName() + "!");
         NetworkCostGraph ncgDone = runSimulation(simConfig, networkAgent);
-        String exportSim = simulationName+"_" + networkAgent.getClass().getName();
-        //TODO maybe do not export here yet, better return to main and then export all agentRuns into one file
-        try {
-            exportSimulation(exportSim, simConfig, ncgDone);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        System.out.println("Simulation of " + networkAgent.getClass().getName() + " is finished and saved to " + exportSim + ".json");
+        System.out.println("Simulation of " + networkAgent.getClass().getName() + " is finished!");
+        return ncgDone;
     }
 
     public static void main(String[] args) {
         //TODO figure out a better way of changing networks/do all of them after each other
-        String simulation = "BrassParadoxSlow1";
+        String simulation = "TestNetwork1";
         System.out.println("GameTheory simEngine started!");
         SimConfig simConfig = null;
         try {
@@ -197,10 +194,16 @@ public class simEngine {
             System.exit(-1);
         }
         System.out.println("Loading of " + simulation +" config successful, running '" + simConfig.getNetTitle() + "'!");
-        runSimulationForAgent(new SelfishRoutingAgent(), simConfig, simulation);
-        //TODO set the correct agents here!
-        //runSimulationForAgent(new Agent2(), simConfig, simulation);
-        //runSimulationForAgent(new Agent3(), simConfig, simulation);
+        Map<String, NetworkCostGraph> ncgDones = new HashMap<>();
+        ncgDones.put(SelfishRoutingAgent.class.getName(), runSimulationForAgent(new SelfishRoutingAgent(), simConfig));
+        //ncgDones.put(TaxedSelfishRoutingAgent.class.getName(), runSimulationForAgent(new TaxedSelfishRoutingAgent(), simConfig));
+        //ncgDones.put(CentralizedAgent.class.getName(), runSimulationForAgent(new CentralizedAgent(), simConfig));
+        try {
+            exportSimulation(simulation, simConfig, ncgDones);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("Export successful!");
         System.out.println("GameTheory simEngine finished, exiting!");
     }
 }
