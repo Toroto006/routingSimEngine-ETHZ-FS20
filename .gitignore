@@ -24,6 +24,14 @@ hs_err_pid*
 .idea
 out
 /routingSimEngine.iml
+/networks/finishedRuns/*
+.gradle/*
+gradle/*
 
+<<<<<<< HEAD
 # VsCode settings #
 *.vscode
+=======
+#VsCode settings#
+/src/.vscode/*
+>>>>>>> 591bcb64390c381f3940f4f90ec31c37c6f8012e
