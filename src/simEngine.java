@@ -168,7 +168,6 @@ public class simEngine {
                 //Add the cost of this agent to the network
                 networkCostGraph.addAgent(agentPath.get(i), agentPath.get(i+1));
             }
-            //TODO somehow save the progress somewhere to then export simulation
             System.out.println(doneAgents + " done and current costMatrix:\n" + networkCostGraph.toString());
         }
         return networkCostGraph;
@@ -202,6 +201,7 @@ public class simEngine {
             exportSimulation(simulation, simConfig, ncgDones);
         } catch (Exception e) {
             e.printStackTrace();
+            System.exit(-2);
         }
         System.out.println("Export successful!");
         System.out.println("GameTheory simEngine finished, exiting!");
