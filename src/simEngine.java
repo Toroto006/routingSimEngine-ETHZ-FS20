@@ -1,4 +1,5 @@
 import org.json.*;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -106,15 +107,46 @@ public class simEngine {
      * This will export the simulation, s.t. the visualizer can use it
      * @param exportSim
      */
-    private static void exportSimulation(String exportSim){
+    private static void exportSimulation(String exportName, SimConfig simConfig){
         //json in java https://www.tutorialspoint.com/json/json_java_example.htm
         //TODO implement export Simulation
         JSONObject export = new JSONObject();
-        
-        obj.put("name", "foo");
-        obj.put("num", new Integer(100));
-        obj.put("balance", new Double(1000.21));
-        obj.put("is_vip", new Boolean(true));
+
+        JSONArray jsNodes = new JSONArray(simConfig.nodes);
+        export.put("nodes", (Object)jsNodes);
+
+        JSONArray jsEdges = new JSONArray();
+        Map<String, Edge> mapEdges = simConfig.networkGraph.edges
+        for(Map.Entry<String, Edge> entry : mapEdges.entrySet()) {
+            String key = entry.getKey()
+            int[] iNodes = key.split(" ", 2);
+            Edge edge = entry.getValue()
+
+            JSONObject jsTemp = new JSONObject();
+            jsTemp.put("cost", edge.costFct.toString())
+            jsTemp.put(simConfig.nodes[iNodes[0]], simConfig.nodes[iNodes[1]])
+            jsTemp.put("usage", edge.getAgents())
+            jsEdges.put(jsTemp)
+        }
+        export.put("edges", jsEdges)
+
+        String filePath = "./networks/"+exportName+".json";
+        FileWriter file;
+
+        try {
+            file = new FileWriter(filePath);
+            file.write(export.toJSONString());
+        } catch (Exception e) {
+            throw new Exception("Couldn't write to/create the following file: " + filePath);
+        } finally {
+ 
+            try {
+                file.flush();
+                file.close();
+            } catch (Exception e) {
+                throw new Exception("Couldn't complete the export to the following file: " + filePath);
+            }
+        }
 
     }
 
@@ -144,7 +176,7 @@ public class simEngine {
         runSimulation(simConfig, networkAgent);
         String exportSim = simulationName+"_" + networkAgent.getClass().getName();
         //TODO actually somehow return simulation result to export
-        exportSimulation(exportSim);
+        exportSimulation(exportSim, simConfig);
         System.out.println("Simulation of " + networkAgent.getClass().getName() + " is finished and saved to " + exportSim + ".json");
     }
 

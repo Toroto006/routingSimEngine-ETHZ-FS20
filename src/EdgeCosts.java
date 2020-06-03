@@ -10,8 +10,8 @@ public class EdgeCosts {
 
     private String createKey(int i, int j) {
         if (i < j)
-            return i + "" + j;
-        return j + "" + i;
+            return i + " " + j;
+        return j + " " + i;
     }
 
     /**

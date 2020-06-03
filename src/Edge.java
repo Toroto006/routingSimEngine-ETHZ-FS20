@@ -20,4 +20,8 @@ public class Edge {
     public void setAgents(int agents) {
         this.agents = agents;
     }
+
+    public int getAgents() {
+        return this.agents;
+    }
 }
