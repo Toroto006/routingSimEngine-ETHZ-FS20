@@ -9,5 +9,5 @@ public interface NetworkAgent {
      * @param decidedAgents the amount of agents, which already decided on a path, i.e. ncg created using ec with decidedAgents
      * @return a list of the path this agent wants to take, including start and destination (in this direction)
      */
-    public LinkedList<String> agentDecide(NetworkCostGraph ncg, EdgeCosts ec, int decidedAgents);
+    public LinkedList<Integer> agentDecide(NetworkCostGraph ncg, EdgeCosts ec, int decidedAgents);
 }

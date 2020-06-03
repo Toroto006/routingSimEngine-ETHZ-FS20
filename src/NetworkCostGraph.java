@@ -1,30 +1,48 @@
-public class NetworkCostGraph {
-    private int adjMatrix[][];
-    private int numVertices;
+/**
+ * This class is used to get the network and the cost of each edge
+ */
+public class NetworkCostGraph extends NetworkGraph{
+    protected int[][] adjMatrix;
 
-    // Initialize the matrix
     public NetworkCostGraph(int numVertices) {
-        this.numVertices = numVertices;
+        super(numVertices);
         adjMatrix = new int[numVertices][numVertices];
     }
 
-    // Add edges
-    public void addEdge(int i, int j, int w) {
-        adjMatrix[i][j] = w;
-        adjMatrix[j][i] = w;
+    public NetworkCostGraph(NetworkGraph networkGraph) {
+        super(networkGraph.numVertices);
+        adjMatrix = new int[numVertices][numVertices];
+        this.edgeCosts.copy(networkGraph.edgeCosts);
+        calculateNewCosts();
     }
 
     public int getLatencyCost(int i, int j) {
         return adjMatrix[i][j];
     }
 
+    /**
+     * This function calculates all edgeCosts of the adjMatrix anew
+     */
+    public void calculateNewCosts() {
+        for (int i = 0; i < numVertices; i++) {
+            for (int j = 0; j < numVertices; j++) {
+                if (existsEdge(i, j)) {
+                    int val = edgeCosts.getEdgeCost(i, j);
+                    adjMatrix[i][j] = val;
+                    adjMatrix[j][i] = val;
+                }
+            }
+        }
+    }
+
     // Print the matrix
+    @Override
     public String toString() {
         StringBuilder s = new StringBuilder();
         for (int i = 0; i < numVertices; i++) {
-            s.append(i + ": ");
+            s.append(i).append(": ");
             for (int j : adjMatrix[i]) {
-                s.append(j + " ");
+                s.append(j).append(" ");
             }
             s.append("\n");
         }
