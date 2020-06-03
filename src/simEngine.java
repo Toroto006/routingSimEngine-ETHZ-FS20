@@ -5,7 +5,6 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 
 public class simEngine {
@@ -126,6 +125,8 @@ public class simEngine {
      */
     private static void runSimulation(SimConfig simConfig, NetworkAgent agent){
         NetworkCostGraph networkCostGraph = new NetworkCostGraph(simConfig.getNetworkGraph());
+        networkCostGraph.calculateAllCosts();
+        System.out.println("Start costMatrix:\n" + networkCostGraph.toString());
         for (int doneAgents = 0; doneAgents < simConfig.getAmountOfAgents(); doneAgents++) {
             //Run one agent
             LinkedList<Integer> agentPath = agent.agentDecide(networkCostGraph, networkCostGraph.getEdgeCosts(), doneAgents);
@@ -134,6 +135,7 @@ public class simEngine {
                 networkCostGraph.addAgent(agentPath.get(i), agentPath.get(i+1));
             }
             //TODO somehow save the progress somewhere to then export simulation
+            System.out.println(doneAgents + " done and current costMatrix: " + networkCostGraph.toString());
         }
     }
 
@@ -147,21 +149,22 @@ public class simEngine {
     }
 
     public static void main(String[] args) {
-        String simulation = "BrassParadox1";
+        //TODO figure out a better way of changing networks/do all of them after each other
+        String simulation = "TestNetwork1";
         System.out.println("GameTheory simEngine started!");
+        SimConfig simConfig = null;
         try {
-            SimConfig simConfig = importSimulationConfiguration(simulation);
-            System.out.println("Loading of " + simulation +" config successful!");
-            //TODO set the correct agents here!
-            System.out.println(simConfig.getNetworkGraph());
-            System.exit(-1);
-            //runSimulationForAgent(new Agent1(), simConfig, simulation);
-            //runSimulationForAgent(new Agent2(), simConfig, simulation);
-            //runSimulationForAgent(new Agent3(), simConfig, simulation);
+            simConfig = importSimulationConfiguration(simulation);
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Loading of " + simulation + " config was not successful!");
+            System.out.println("Loading of " + simulation + " config was not successful, exiting!");
+            System.exit(-1);
         }
+        System.out.println("Loading of " + simulation +" config successful, running '" + simConfig.getNetTitle() + "'!");
+        runSimulationForAgent(new SelfishRoutingAgent(), simConfig, simulation);
+        //TODO set the correct agents here!
+        //runSimulationForAgent(new Agent2(), simConfig, simulation);
+        //runSimulationForAgent(new Agent3(), simConfig, simulation);
         System.out.println("GameTheory simEngine finished, exiting!");
     }
 }

@@ -9,7 +9,7 @@ public class NetworkGraph {
     }
 
     // Add edges
-    public void addEdge(int i, int j, CostFct c) {
+    public void addEdge(int i, int j, CostFct c) throws Exception {
         if (i < 0 || j < 0)
             throw new IndexOutOfBoundsException("no negative indices for vertices");
         if (i >= numVertices || j >= numVertices)
@@ -28,8 +28,8 @@ public class NetworkGraph {
 
     // Print the matrix
     public String toString() {
-        System.out.println("Following is the current NetworkGraphMatrix:");
         StringBuilder s = new StringBuilder();
+        s.append("Following is the current NetworkGraphMatrix:\n");
         for (int i = 0; i < numVertices; i++) {
             s.append(i).append(": ");
             for (int j = 0; j < numVertices; j++) {
