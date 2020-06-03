@@ -130,7 +130,7 @@ public class simEngine {
         }
         export.put("edges", jsEdges);
 
-        String filePath = "./networks/"+exportName+".json";
+        String filePath = "./networks/finishedRuns/"+exportName+".json";
         FileWriter file;
         file = new FileWriter(filePath);
         try {
@@ -154,7 +154,7 @@ public class simEngine {
      * @param agent the agent to use for this simulation
      * @return
      */
-    private static NetworkCostGraph runSimulation(SimConfig simConfig, NetworkAgent agent){
+    private static NetworkCostGraph runSimulation(final SimConfig simConfig, NetworkAgent agent){
         NetworkCostGraph networkCostGraph = new NetworkCostGraph(simConfig.getNetworkGraph());
         networkCostGraph.calculateAllCosts();
         System.out.println("Start costMatrix:\n" + networkCostGraph.toString());
@@ -171,11 +171,11 @@ public class simEngine {
         return networkCostGraph;
     }
 
-    private static void runSimulationForAgent(NetworkAgent networkAgent, SimConfig simConfig, String simulationName){
+    private static void runSimulationForAgent(NetworkAgent networkAgent, final SimConfig simConfig, String simulationName){
         System.out.println("Starting the simulation of " + networkAgent.getClass().getName() + "!");
         NetworkCostGraph ncgDone = runSimulation(simConfig, networkAgent);
         String exportSim = simulationName+"_" + networkAgent.getClass().getName();
-        //TODO actually somehow return simulation result to export
+        //TODO maybe do not export here yet, better return to main and then export all agentRuns into one file
         try {
             exportSimulation(exportSim, simConfig, ncgDone);
         } catch (Exception e) {
@@ -186,7 +186,7 @@ public class simEngine {
 
     public static void main(String[] args) {
         //TODO figure out a better way of changing networks/do all of them after each other
-        String simulation = "TestNetwork1";
+        String simulation = "BrassParadoxSlow1";
         System.out.println("GameTheory simEngine started!");
         SimConfig simConfig = null;
         try {
