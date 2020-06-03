@@ -28,11 +28,19 @@ public class NetworkGraph {
 
     // Print the matrix
     public String toString() {
+        System.out.println("Following is the current NetworkGraphMatrix:");
         StringBuilder s = new StringBuilder();
         for (int i = 0; i < numVertices; i++) {
             s.append(i).append(": ");
             for (int j = 0; j < numVertices; j++) {
-                s.append(edgeCosts.getEdgeCost(i, j)).append(" ");
+                if (i == j) {
+                    s.append("0 ");
+                    continue;
+                }
+                if(edgeCosts.contains(i, j))
+                    s.append(edgeCosts.getEdgeCost(i, j)).append(" ");
+                else
+                    s.append("∞ ");
             }
             s.append("\n");
         }
