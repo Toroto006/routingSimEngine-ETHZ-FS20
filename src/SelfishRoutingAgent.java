@@ -17,13 +17,14 @@ public class SelfishRoutingAgent implements NetworkAgent{
     public LinkedList<Integer> agentDecide(NetworkCostGraph ncg, EdgeCosts ec, int decidedAgents) {
         this.ncg = ncg;
         LinkedList<Integer> ret = new LinkedList<>();
+        int last = this.ncg.numVertices - 1;
 
         /* -- initialization -- */
-        cost = new int[this.ncg.numVertices];
-        predecessor = new int[this.ncg.numVertices];
+        cost = new int[last + 1];
+        predecessor = new int[last + 1];
         LinkedList<Integer> nodesLeft = new LinkedList<>();
 
-        for(int i = 0; i < this.ncg.numVertices; i++){
+        for(int i = 0; i <= last; i++){
             cost[i] = Integer.MAX_VALUE;
             predecessor[i] = -1;
             nodesLeft.add(i);
@@ -39,14 +40,14 @@ public class SelfishRoutingAgent implements NetworkAgent{
                     u = uu;
                 }
             }
-            nodesLeft.remove(u);
-            if(u == this.ncg.numVertices - 1){
+            nodesLeft.remove(nodesLeft.indexOf(u));
+            if(u == last){
                 nodesLeft.clear();
             }
             for (int v:nodesLeft
                  ) {
                 if(ec.contains(u, v)){
-                    upadtaCost(u, v, ec);
+                    updateCost(u, v, ncg);
                 }
             }
         }
@@ -61,11 +62,8 @@ public class SelfishRoutingAgent implements NetworkAgent{
         return ret;
     }
 
-    //TODO use NetworkCostGraph for the cost calculation or EdgeCosts?
-    //You should be able to use both, i.e. networkCostGraph is just more efficient,
-    // since we saved it there and we do not have to recalculate every time
-    private void upadtaCost(int u, int v, EdgeCosts ec){
-        int costs = cost[u] + ec.getEdgeCost(u, v);
+    private void updateCost(int u, int v, NetworkCostGraph ncg){
+        int costs = cost[u] + ncg.getLatencyCost(u, v);
         if(costs < cost[v]){
             cost[v] = costs;
             predecessor[v] = u;

@@ -18,7 +18,7 @@ public class simEngine {
     }
 
     /**
-     * import network json, every vertex except dest has to have one outgoing edge
+     * import network json, every vertex except dest has to hav e one outgoing edge
      * @param simulation
      */
     private static SimConfig importSimulationConfiguration(String simulation) throws Exception {
@@ -128,7 +128,7 @@ public class simEngine {
                 networkCostGraph.addAgent(agentPath.get(i), agentPath.get(i+1));
             }
             //TODO somehow save the progress somewhere to then export simulation
-            System.out.println(doneAgents + " done and current costMatrix: " + networkCostGraph.toString());
+            System.out.println(doneAgents + " done and current costMatrix:\n" + networkCostGraph.toString());
         }
     }
 
