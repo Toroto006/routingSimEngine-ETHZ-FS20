@@ -24,3 +24,6 @@ hs_err_pid*
 .idea
 out
 /routingSimEngine.iml
+
+#VsCode settings#
+\src\.vscode
