@@ -12,8 +12,7 @@ public class TaxedSelfishRoutingAgent implements NetworkAgent {
     @Override
     public LinkedList<Integer> agentDecide(NetworkCostGraph ncg, EdgeCosts ec, int decidedAgents, int totalAgents) {
 
-        factor = 1.0;
-
+        factor = 10.0;
         LinkedList<Integer> ret = new LinkedList<>();
         int last = ncg.getNumVertices() - 1;
 
@@ -49,6 +48,7 @@ public class TaxedSelfishRoutingAgent implements NetworkAgent {
             }
         }
 
+
         /* -- Backtracking -- */
         int u = ncg.getNumVertices() - 1;
         ret.add(u);
@@ -62,7 +62,7 @@ public class TaxedSelfishRoutingAgent implements NetworkAgent {
         //TODO implement correct way of calculating taxes
         private void updateCost(int u, int v, EdgeCosts ec, int decidedAgents){
         //double costs = cost[u] + ec.getEdgeCost(u, v) + ec.getEdgeCost(u, v) - ec.getEdgeCostCustomAgents(u, v, decidedAgents);
-        double costs = cost[u] + ec.getEdgeCostCustomAgents(u, v, decidedAgents) + factor * (ec.getEdgeCostCustomAgents(u, v, decidedAgents + 1) - ec.getEdgeCostCustomAgents(u, v, decidedAgents + 1));
+        double costs = cost[u] + ec.getEdgeCostCustomAgents(u, v, decidedAgents) + factor * decidedAgents * (ec.getEdgeCostCustomAgents(u, v, decidedAgents + 1) - ec.getEdgeCostCustomAgents(u, v, decidedAgents + 1));
         if(costs < cost[v]){
             cost[v] = costs;
             predecessor[v] = u;
