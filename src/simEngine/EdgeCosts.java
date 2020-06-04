@@ -26,7 +26,8 @@ public class EdgeCosts {
         String key = createKey(i, j);
         if (edges.containsKey(key))
             throw new Exception("The edge (" + i +", " + j + ") was already added!");
-        edges.put(key, new Edge(c));
+        
+        edges.put(key, new Edge(c, i < j));
     }
 
     /**

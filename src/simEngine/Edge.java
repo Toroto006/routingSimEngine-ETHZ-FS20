@@ -3,12 +3,14 @@ package simEngine;
 public class Edge {
     private final CostFct costFct;
     private int agents;
+    private boolean direction; //true from i -> j, false j -> i
 
-    public Edge(CostFct costFct) {
+    public Edge(CostFct costFct, boolean direction) {
         if (costFct == null)
             throw new NullPointerException("simEngine.CostFct can not be null!");
         this.costFct = costFct;
         agents = 1;
+        setDirection(direction);
     }
 
     public Float getCost() {
@@ -25,6 +27,14 @@ public class Edge {
 
     public int getAgents() {
         return this.agents-1;
+    }
+
+    public void setDirection(boolean direction){
+        this.direction = direction;
+    }
+
+    public boolean getDirection(){
+        return this.direction;
     }
 
     public CostFct getCostFct() {

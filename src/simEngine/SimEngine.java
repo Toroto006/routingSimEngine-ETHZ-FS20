@@ -133,7 +133,14 @@ public class SimEngine {
             Edge edge = entry.getValue();
 
             JSONObject jsTemp = new JSONObject();
-            String[] c = { nodes[iNodes[0]], nodes[iNodes[1]] };
+
+            String[] c;
+            if(edge.getDirection()){
+                c = new String[]{ nodes[iNodes[0]], nodes[iNodes[1]] };
+            } else {
+                c = new String[]{ nodes[iNodes[1]], nodes[iNodes[0]] };
+            }
+
             JSONArray connection = new JSONArray(c);
             jsTemp.put("connection", connection);
             jsTemp.put("cost", edge.getCostFct().toString());
