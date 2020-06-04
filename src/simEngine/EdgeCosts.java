@@ -1,3 +1,5 @@
+package simEngine;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,7 +20,7 @@ public class EdgeCosts {
      * Function to add edges
      * @param i from node
      * @param j to node
-     * @param c the CostFct of this edge, given the number of agents on it
+     * @param c the simEngine.CostFct of this edge, given the number of agents on it
      */
     public void addEdge(int i, int j, CostFct c) throws Exception {
         String key = createKey(i, j);
@@ -35,6 +37,10 @@ public class EdgeCosts {
      */
     public Float getEdgeCost(int i, int j) {
         return edges.get(createKey(i, j)).getCost();
+    }
+
+    public Float getEdgeCostCustomAgents(int i, int j, int t) {
+        return edges.get(createKey(i, j)).getCost(t);
     }
 
     public boolean contains(int i, int j) {

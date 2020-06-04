@@ -1,12 +1,14 @@
+package simEngine;
+
 public class Edge {
     private final CostFct costFct;
     private int agents;
 
     public Edge(CostFct costFct) {
         if (costFct == null)
-            throw new NullPointerException("CostFct can not be null!");
+            throw new NullPointerException("simEngine.CostFct can not be null!");
         this.costFct = costFct;
-        agents = 0;
+        agents = 1;
     }
 
     public Float getCost() {
@@ -22,10 +24,14 @@ public class Edge {
     }
 
     public int getAgents() {
-        return this.agents;
+        return this.agents-1;
     }
 
     public CostFct getCostFct() {
         return costFct;
+    }
+
+    public Float getCost(int t) {
+        return costFct.getCost(t);
     }
 }

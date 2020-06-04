@@ -1,3 +1,7 @@
+package simEngine;
+
+import agents.NetworkAgent;
+import agents.SelfishRoutingAgent;
 import org.json.*;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -23,10 +27,8 @@ public class simEngine {
      */
     private static SimConfig importSimulationConfiguration(String simulation) throws Exception {
         // json in java https://www.tutorialspoint.com/json/json_java_example.htm
-        // TODO implement the import and konversion of the json network and
         // we give the nodes numbers in lexicographic order for internal purpose
-        // e.g. a graph with A B C as nodes will internally be a adj. matrix of size 3,
-        // where 0 is A
+        // e.g. a graph with A B C as nodes will internally be a adj. matrix of size 3, where 0 is A
         String filePath = "./networks/" + simulation + ".json";
         String jsonConfigString = null;
         try {
@@ -48,12 +50,12 @@ public class simEngine {
         for (Object o : jsonObject.getJSONArray("edges")) {
             if (!(o instanceof JSONObject))
                 throw new Exception("Decoding the json was not successful, edges are wrong/not given!");
-            JSONObject edge = (JSONObject) o;
-            System.out.println(o.toString() + "\n");
+            JSONObject edge = (JSONObject)o;
+            //System.out.println(o.toString() + "\n");
 
             CostFct c = null;
             String costFctStr = edge.getString("cost");
-            System.out.println(edge.toString() + "\n");
+            //System.out.println(edge.toString() + "\n");
             Matcher m = pattern.matcher(costFctStr);
             m.find();
             try {
@@ -179,7 +181,7 @@ public class simEngine {
 
         NetworkCostGraph networkCostGraph = new NetworkCostGraph(simConfig.getNetworkGraph());
         networkCostGraph.calculateAllCosts();
-        System.out.println("Start costMatrix:\n" + networkCostGraph.toString());
+        //System.out.println("Start costMatrix:\n" + networkCostGraph.toString());
         for (int doneAgents = 0; doneAgents < simConfig.getAmountOfAgents(); doneAgents++) {
             // Run one agent
             LinkedList<Integer> agentPath = agent.agentDecide(networkCostGraph, networkCostGraph.getEdgeCosts(),
@@ -234,13 +236,13 @@ public class simEngine {
 
     public static void main(String[] args) throws Exception {
         String SimulationName = "Simulation";
-        String[] networks = {"BrassParadoxFast1", "BrassParadoxSlow1"};
-        // String[] networks = { "TestNetwork1", "TestNetwork2", "TestNetwork3" };
-        // TODO set the correct agents here!
-        NetworkAgent[] agents = { new SelfishRoutingAgent() };
+        String[] networks = {"BraessParadoxFast1", "BraessParadoxSlow1"};
+        //String[] networks = {"TestNetwork1", "TestNetwork2", "TestNetwork3"};
+        //TODO set the correct agents here!
+        NetworkAgent[] agents = {new SelfishRoutingAgent()};
 
-        System.out.println("GameTheory simEngine started!");
-
+        System.out.println("GameTheory simEngine.simEngine started!\n");
+        
         JSONObject finalExport = new JSONObject();
         for (String network : networks) {
             JSONObject currentNetwork = new JSONObject();
@@ -258,10 +260,13 @@ public class simEngine {
             for (NetworkAgent agent : agents)
                 runSimulationForAgent(agent, simConfig, currentNetwork);
 
+            System.out.println("Finished all simulations of " + simConfig.getNetTitle() + "'!\n");
+            currentNetwork.put("networkTitle", simConfig.getNetTitle());
+            currentNetwork.put("amountOfAgents", simConfig.getAmountOfAgents());
             finalExport.put(network, currentNetwork);
         }
 
         exportSimulationsToFile(SimulationName, finalExport);
-        System.out.println("GameTheory simEngine finished, exiting!");
+        System.out.println("GameTheory simEngine.simEngine finished, exiting!");
     }
 }

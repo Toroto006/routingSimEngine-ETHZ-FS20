@@ -1,3 +1,5 @@
+package simEngine;
+
 public class LinearFct implements CostFct {
     private final Float b;
     private final Float a;
