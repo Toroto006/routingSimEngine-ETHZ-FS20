@@ -118,7 +118,11 @@ public class SimEngine {
         JSONArray jsEdges = new JSONArray();
         for (Map.Entry<String, Edge> entry : sortedEdges.entrySet()) {
             String key = entry.getKey();
-            Integer[] iNodes = Arrays.stream(key.split(" ", 2)).map(o -> Integer.parseInt(o)).toArray(Integer[]::new);
+            Integer[] iNodes = Arrays.stream(key.split(" ")).map(s -> {
+                if (s.contains("-"))
+                    return 0;
+                return Integer.parseInt(s);
+            }).toArray(Integer[]::new);
             Edge edge = entry.getValue();
 
             JSONObject jsTemp = new JSONObject();

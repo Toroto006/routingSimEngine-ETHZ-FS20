@@ -32,7 +32,6 @@ public class NetworkCostGraph extends NetworkGraph{
                 if (existsEdge(i, j))
                     val = edgeCosts.getEdgeCost(i, j);
                 adjMatrix[i][j] = val;
-                adjMatrix[j][i] = val;
             }
         }
     }

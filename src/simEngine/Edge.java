@@ -7,7 +7,7 @@ public class Edge {
 
     public Edge(CostFct costFct, boolean direction) {
         if (costFct == null)
-            throw new NullPointerException("simEngine.CostFct can not be null!");
+            throw new NullPointerException("CostFct can not be null!");
         this.costFct = costFct;
         agents = 1;
         setDirection(direction);

@@ -12,8 +12,8 @@ public class EdgeCosts {
 
     private String createKey(int i, int j) {
         if (i < j)
-            return i + " " + j;
-        return j + " " + i;
+            return i + " " + j + " ->";
+        return j + " " + i + " <-";
     }
 
     /**
@@ -23,6 +23,8 @@ public class EdgeCosts {
      * @param c the simEngine.CostFct of this edge, given the number of agents on it
      */
     public void addEdge(int i, int j, CostFct c) throws Exception {
+        if (i == j)
+            throw new Exception("In this graph there can not exist edges to itself!");
         String key = createKey(i, j);
         if (edges.containsKey(key))
             throw new Exception("The edge (" + i +", " + j + ") was already added!");
