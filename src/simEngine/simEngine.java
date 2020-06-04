@@ -76,8 +76,9 @@ public class simEngine {
         }
         // Read the rest of the config
         int amountOfAgents = jsonObject.getInt("amountOfAgents");
+        int agentsPerStep = jsonObject.getInt("agentsPerStep");
         String networkTitle = jsonObject.getString("networkTitle");
-        return new SimConfig(nodes, networkGraph, amountOfAgents, networkTitle);
+        return new SimConfig(nodes, networkGraph, amountOfAgents, networkTitle, agentsPerStep);
     }
 
     private static HashMap<Integer, String> createNodeMappingIS(String[] nodes) {
@@ -106,7 +107,6 @@ public class simEngine {
      * This will initialise the JSONObject of one Simulation
      * 
      * @param simConfig
-     * @param ncgDone
      * @param nameOfAgent
      * @param out
      */
@@ -193,7 +193,7 @@ public class simEngine {
             networkCostGraph.calculateAllCosts();
 
             
-            if(doneAgents % 100 == 0 || doneAgents == simConfig.getAmountOfAgents() - 1) {
+            if(doneAgents % simConfig.getAgentsPerStep() == 0 || doneAgents == simConfig.getAmountOfAgents() - 1) {
                 Map<String, Edge> mapEdges = new TreeMap<String, Edge>(simConfig.getNetworkGraph().getEdges());
                 int[] arr = new int[mapEdges.size()];
                 int i = 0;
