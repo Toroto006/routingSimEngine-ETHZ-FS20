@@ -1,6 +1,8 @@
+package agents;
+import simEngine.*;
 import java.util.LinkedList;
 
-public class SelfishRoutingAgent implements NetworkAgent{
+public class SelfishRoutingAgent implements NetworkAgent {
 
     private NetworkCostGraph ncg;
     private  double cost [];
@@ -17,7 +19,7 @@ public class SelfishRoutingAgent implements NetworkAgent{
     public LinkedList<Integer> agentDecide(NetworkCostGraph ncg, EdgeCosts ec, int decidedAgents) {
         this.ncg = ncg;
         LinkedList<Integer> ret = new LinkedList<>();
-        int last = this.ncg.numVertices - 1;
+        int last = this.ncg.getNumVertices() - 1;
 
         /* -- initialization -- */
         cost = new double[last + 1];
@@ -47,13 +49,13 @@ public class SelfishRoutingAgent implements NetworkAgent{
             for (int v:nodesLeft
                  ) {
                 if(ec.contains(u, v)){
-                    updateCost(u, v, ec);
+                    updateCost(u, v, ncg);
                 }
             }
         }
 
         /* -- Backtracking -- */
-        int u = this.ncg.numVertices - 1;
+        int u = this.ncg.getNumVertices() - 1;
         ret.add(u);
         while(predecessor[u] >= 0){
             u = predecessor[u];
@@ -62,6 +64,7 @@ public class SelfishRoutingAgent implements NetworkAgent{
         return ret;
     }
 
+    //Both update cost work now!
     private void updateCost(int u, int v, EdgeCosts ec){
         double costs = cost[u] + ec.getEdgeCost(u, v);
         if(costs < cost[v]){
@@ -70,7 +73,6 @@ public class SelfishRoutingAgent implements NetworkAgent{
         }
     }
 
-    //TODO currently not used, ncg.getLatency gives always the same value back?!
     private void updateCost(int u, int v, NetworkCostGraph ncg){
         double costs = cost[u] + ncg.getLatencyCost(u, v);
         if(costs < cost[v]){

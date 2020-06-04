@@ -1,3 +1,7 @@
+package simEngine;
+
+import agents.NetworkAgent;
+import agents.SelfishRoutingAgent;
 import org.json.*;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -24,7 +28,6 @@ public class simEngine {
      */
     private static SimConfig importSimulationConfiguration(String simulation) throws Exception {
         //json in java https://www.tutorialspoint.com/json/json_java_example.htm
-        //TODO implement the import and konversion of the json network and
         //we give the nodes numbers in lexicographic order for internal purpose
         //e.g. a graph with A B C as nodes will internally be a adj. matrix of size 3, where 0 is A
         String filePath = "./networks/"+simulation+".json";
@@ -106,7 +109,6 @@ public class simEngine {
      */
     private static void exportSimulation(SimConfig simConfig, NetworkCostGraph ncgDone, String nameOfAgent, JSONObject out) throws Exception {
         //json in java https://www.tutorialspoint.com/json/json_java_example.htm
-        //TODO implement export Simulation
         JSONObject export = new JSONObject();
 
             String[] nodes = simConfig.getNodes();
@@ -178,9 +180,9 @@ public class simEngine {
     }
 
     private static void runSimulationForAgent(NetworkAgent networkAgent, SimConfig simConfig, JSONObject out){
-        System.out.println("Starting the simulation of " + networkAgent.getClass().getName() + "!");
+        System.out.println("Starting the simulation of " + networkAgent.getClass().getSimpleName() + "!");
         NetworkCostGraph ncgDone = runSimulation(simConfig, networkAgent);
-        String agentName = networkAgent.getClass().getName();
+        String agentName = networkAgent.getClass().getSimpleName();
         //TODO actually somehow return simulation result to export
         try {
             exportSimulation(simConfig, ncgDone, agentName, out);
@@ -197,7 +199,7 @@ public class simEngine {
         //TODO set the correct agents here!
         NetworkAgent[] agents = {new SelfishRoutingAgent()};
 
-        System.out.println("GameTheory simEngine started!\n");
+        System.out.println("GameTheory simEngine.simEngine started!\n");
         
         JSONObject finalExport = new JSONObject();
         for(String network: networks) {
@@ -221,8 +223,7 @@ public class simEngine {
             finalExport.put(network, currentNetwork);
         }
 
-
         exportSimulationsToFile(SimulationName, finalExport);
-        System.out.println("GameTheory simEngine finished, exiting!");
+        System.out.println("GameTheory simEngine.simEngine finished, exiting!");
     }
 }

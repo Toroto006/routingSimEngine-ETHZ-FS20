@@ -1,3 +1,5 @@
+package simEngine;
+
 public class SimConfig {
     private final NetworkGraph networkGraph;
     private final String[] nodes;

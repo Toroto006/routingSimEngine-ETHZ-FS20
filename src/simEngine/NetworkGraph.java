@@ -1,3 +1,5 @@
+package simEngine;
+
 import java.util.Map;
 
 public class NetworkGraph {
@@ -57,5 +59,9 @@ public class NetworkGraph {
 
     public Map<String,Edge> getEdges() {
         return edgeCosts.getEdges();
+    }
+
+    public int getNumVertices() {
+        return this.numVertices;
     }
 }

@@ -1,3 +1,5 @@
+package simEngine;
+
 public interface CostFct {
 
     /**

@@ -1,3 +1,5 @@
+package simEngine;
+
 /**
  * This class is used to get the network and the cost of each edge
  */
