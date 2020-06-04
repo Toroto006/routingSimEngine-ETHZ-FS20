@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class simEngine {
+public class SimEngine {
     // Read file content into string with - Files.readAllBytes(Path path)
     // https://howtodoinjava.com/java/io/java-read-file-to-string-examples/
     private static String readAllBytesJava7(String filePath) throws IOException {
@@ -76,8 +76,14 @@ public class simEngine {
         }
         // Read the rest of the config
         int amountOfAgents = jsonObject.getInt("amountOfAgents");
+        int agentsPerStep = 0;
+        try {
+            agentsPerStep = jsonObject.getInt("agentsPerStep");
+        } catch (JSONException e) {}
+        if (agentsPerStep == 0)
+            agentsPerStep = amountOfAgents;
         String networkTitle = jsonObject.getString("networkTitle");
-        return new SimConfig(nodes, networkGraph, amountOfAgents, networkTitle);
+        return new SimConfig(nodes, networkGraph, amountOfAgents, networkTitle, agentsPerStep);
     }
 
     private static HashMap<Integer, String> createNodeMappingIS(String[] nodes) {
@@ -106,7 +112,6 @@ public class simEngine {
      * This will initialise the JSONObject of one Simulation
      * 
      * @param simConfig
-     * @param ncgDone
      * @param nameOfAgent
      * @param out
      */
@@ -193,7 +198,7 @@ public class simEngine {
             networkCostGraph.calculateAllCosts();
 
             
-            if(doneAgents % 100 == 0 || doneAgents == simConfig.getAmountOfAgents() - 1) {
+            if(doneAgents > 0 && doneAgents % simConfig.getAgentsPerStep() == 0 || doneAgents == simConfig.getAmountOfAgents() - 1) {
                 Map<String, Edge> mapEdges = new TreeMap<String, Edge>(simConfig.getNetworkGraph().getEdges());
                 int[] arr = new int[mapEdges.size()];
                 int i = 0;

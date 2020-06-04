@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
     "BraessParadoxSlow1": {
         "amountOfAgents": 4000,
@@ -478,3 +479,6 @@
         "networkTitle": "Brass's paradox n = 1 without center"
     }
 }
+=======
+{"BraessParadoxSlow1":{"amountOfAgents":4000,"agents.SelfishRoutingAgent":{"nodes":["a","b","c","d"],"edges":[{"cost":"0.0*t+45.0","usage":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"connection":["a","b"]},{"cost":"0.01*t+0.0","usage":[251,501,751,1001,1251,1501,1751,2001,2251,2501,2751,3001,3251,3501,3751,4000],"connection":["a","c"]},{"cost":"0.0*t+0.0","usage":[251,501,751,1001,1251,1501,1751,2001,2251,2501,2751,3001,3251,3501,3751,4000],"connection":["b","c"]},{"cost":"0.01*t+0.0","usage":[251,501,751,1001,1251,1501,1751,2001,2251,2501,2751,3001,3251,3501,3751,4000],"connection":["b","d"]},{"cost":"0.0*t+45.0","usage":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"connection":["c","d"]}]},"networkTitle":"Brass's paradox n = 1 with center"},"BraessParadoxFast1":{"amountOfAgents":4000,"agents.SelfishRoutingAgent":{"nodes":["a","b","c","d"],"edges":[{"cost":"0.0*t+45.0","usage":[2000],"connection":["a","b"]},{"cost":"0.01*t+0.0","usage":[2000],"connection":["a","c"]},{"cost":"0.01*t+0.0","usage":[2000],"connection":["b","d"]},{"cost":"0.0*t+45.0","usage":[2000],"connection":["c","d"]}]},"networkTitle":"Brass's paradox n = 1 without center"}}
+>>>>>>> 110e0348cab71f0b815408c15042064e372b458b
