@@ -1,14 +1,17 @@
 package visualizer;
 
+import com.sun.org.apache.bcel.internal.generic.JsrInstruction;
 import org.graphstream.algorithm.generator.DorogovtsevMendesGenerator;
 import org.graphstream.algorithm.generator.Generator;
 import org.graphstream.algorithm.randomWalk.RandomWalk;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.MultiGraph;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static utils.UtilFuntions.readFileAsJSON;
 
@@ -33,10 +36,37 @@ public class SimulationVisualizer {
 
     private static Graph createGraphFromJson(JSONObject simulation) {
         Graph graph = new MultiGraph(simulation.getString("networkTitle"));
-
+        //TODO do for all/told agents
+        simulation = simulation.getJSONObject("SelfishRoutingAgent");
+        System.out.println(simulation.keySet());
+        List<Object> nodes = simulation.getJSONArray("nodes").toList();
+        for (Object e: nodes) {
+            if (! (e instanceof String)) {
+                System.out.println("The read simultaion json has the wrong format!");
+                System.exit(-2);
+            }
+            String nodeID = (String) e;
+            graph.addNode(nodeID);
+        }
+        for (Object e: simulation.getJSONArray("edges")) {
+            if (! (e instanceof JSONObject)) {
+                System.out.println("The read simultaion json has the wrong format!");
+                System.exit(-2);
+            }
+            JSONArray conn = ((JSONObject) e).getJSONArray("connection");
+            String edgeID = conn.getString(0)+conn.getString(1);
+            graph.addEdge(edgeID, conn.getString(0), conn.getString(1));
+        }
         graph.addAttribute("ui.stylesheet", styleSheet);
         graph.addAttribute("ui.quality");
         graph.addAttribute("ui.antialias");
+        //Set start & endNodes
+        graph.getNode((String) nodes.get(0)).addAttribute("layout.frozen");
+        graph.getNode((String) nodes.get(nodes.size()-1)).addAttribute("layout.frozen");
+        graph.getNode((String) nodes.get(0)).setAttribute("xy", 0, 0);
+        graph.getNode((String) nodes.get(nodes.size()-1)).setAttribute("xy", 1, 0);
+        graph.getNode((String) nodes.get(0)).addAttribute("ui.label", "Start");
+        graph.getNode((String) nodes.get(nodes.size()-1)).addAttribute("ui.label", "End");
         return graph;
     }
 
@@ -45,7 +75,7 @@ public class SimulationVisualizer {
         SimulationVisualizer simVis = new SimulationVisualizer();
         //simVis.TestRandomWalk();
         //System.exit(-1);
-        ArrayList<JSONObject> sims = getSimulationsFromJson("Simulation_out.json");
+        ArrayList<JSONObject> sims = getSimulationsFromJson("Simulation_out");
         for (JSONObject sim: sims) {
             Graph g = createGraphFromJson(sim);
             g.display();
@@ -125,12 +155,12 @@ public class SimulationVisualizer {
 
     protected static String styleSheet =
             "edge {"+
-                    "	size: 3px;"+
-                    "	fill-color: red, yellow, green, gray;"+
-                    "	fill-mode: dyn-plain;"+
-                    "}"+
-                    "node {"+
-                    "	size: 6px;"+
-                    "	fill-color: #444;"+
-                    "}";
+            "	size: 3px;"+
+            "	fill-color: red, yellow, green, gray;"+
+            "	fill-mode: dyn-plain;"+
+            "}"+
+            "node {"+
+            "	size: 6px;"+
+            "	fill-color: #444;"+
+            "}";
 }

@@ -192,7 +192,7 @@ public class SimEngine {
 
             // Run one agent
             LinkedList<Integer> agentPath = agent.agentDecide(networkCostGraph, networkCostGraph.getEdgeCosts(),
-                    doneAgents);
+                    doneAgents, simConfig.getAmountOfAgents());
             for (int i = 0; i < agentPath.size() - 1; i++) {
                 // Add the cost of this agent to the network
                 networkCostGraph.addAgent(agentPath.get(i), agentPath.get(i + 1));

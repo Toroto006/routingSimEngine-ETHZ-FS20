@@ -16,7 +16,7 @@ public class SelfishRoutingAgent implements NetworkAgent {
      * @param decidedAgents the amount of agents, which already decided on a path, i.e. ncg created using ec with decidedAgents
      * @return The optimal path from start node ([0][0] in matrix) to end node ([#nodes - 1][#nodes - 1] in matrix)
      */
-    public LinkedList<Integer> agentDecide(NetworkCostGraph ncg, EdgeCosts ec, int decidedAgents) {
+    public LinkedList<Integer> agentDecide(NetworkCostGraph ncg, EdgeCosts ec, int decidedAgents, int totalAgents) {
         this.ncg = ncg;
         LinkedList<Integer> ret = new LinkedList<>();
         int last = this.ncg.getNumVertices() - 1;
