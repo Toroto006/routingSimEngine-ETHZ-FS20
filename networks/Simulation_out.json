@@ -1,1 +1,98 @@
-{"BrassParadoxSlow1":{"SelfishRoutingAgent":{"nodes":["a","b","c","d"],"edges":[{"cost":"0.0*t+1.0","usage":0,"connection":["a","b"]},{"cost":"0.01*t+0.0","usage":1000,"connection":["a","c"]},{"cost":"0.0*t+0.0","usage":1000,"connection":["b","c"]},{"cost":"0.01*t+0.0","usage":1000,"connection":["b","d"]},{"cost":"0.0*t+1.0","usage":0,"connection":["c","d"]}]}},"BrassParadoxFast1":{"SelfishRoutingAgent":{"nodes":["a","b","c","d"],"edges":[{"cost":"0.0*t+1.0","usage":0,"connection":["a","b"]},{"cost":"0.01*t+0.0","usage":1000,"connection":["a","c"]},{"cost":"0.01*t+0.0","usage":0,"connection":["b","d"]},{"cost":"0.0*t+1.0","usage":1000,"connection":["c","d"]}]}}}
+{
+    "BrassParadoxSlow1": {
+        "SelfishRoutingAgent": {
+            "nodes": [
+                "a",
+                "b",
+                "c",
+                "d"
+            ],
+            "edges": [
+                {
+                    "cost": "0.0*t+1.0",
+                    "usage": 0,
+                    "connection": [
+                        "a",
+                        "b"
+                    ]
+                },
+                {
+                    "cost": "0.01*t+0.0",
+                    "usage": 1000,
+                    "connection": [
+                        "a",
+                        "c"
+                    ]
+                },
+                {
+                    "cost": "0.0*t+0.0",
+                    "usage": 1000,
+                    "connection": [
+                        "b",
+                        "c"
+                    ]
+                },
+                {
+                    "cost": "0.01*t+0.0",
+                    "usage": 1000,
+                    "connection": [
+                        "b",
+                        "d"
+                    ]
+                },
+                {
+                    "cost": "0.0*t+1.0",
+                    "usage": 0,
+                    "connection": [
+                        "c",
+                        "d"
+                    ]
+                }
+            ]
+        }
+    },
+    "BrassParadoxFast1": {
+        "SelfishRoutingAgent": {
+            "nodes": [
+                "a",
+                "b",
+                "c",
+                "d"
+            ],
+            "edges": [
+                {
+                    "cost": "0.0*t+1.0",
+                    "usage": 0,
+                    "connection": [
+                        "a",
+                        "b"
+                    ]
+                },
+                {
+                    "cost": "0.01*t+0.0",
+                    "usage": 1000,
+                    "connection": [
+                        "a",
+                        "c"
+                    ]
+                },
+                {
+                    "cost": "0.01*t+0.0",
+                    "usage": 0,
+                    "connection": [
+                        "b",
+                        "d"
+                    ]
+                },
+                {
+                    "cost": "0.0*t+1.0",
+                    "usage": 1000,
+                    "connection": [
+                        "c",
+                        "d"
+                    ]
+                }
+            ]
+        }
+    }
+}

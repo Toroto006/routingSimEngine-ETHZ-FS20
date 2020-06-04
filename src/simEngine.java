@@ -174,7 +174,7 @@ public class simEngine {
                 //Add the cost of this agent to the network
                 networkCostGraph.addAgent(agentPath.get(i), agentPath.get(i+1));
             }
-            System.out.println(doneAgents + " done and current costMatrix:\n" + networkCostGraph.toString());
+            // System.out.println(doneAgents + " done and current costMatrix:\n" + networkCostGraph.toString());
         }
         return networkCostGraph;
     }
@@ -196,6 +196,8 @@ public class simEngine {
         //TODO figure out a better way of changing networks/do all of them after each other
         String SimulationName = "Simulation";
         String[] networks = {"BrassParadoxFast1", "BrassParadoxSlow1"};
+
+        //TODO set the correct agents here!
         NetworkAgent[] agents = {new SelfishRoutingAgent()};
 
         System.out.println("GameTheory simEngine started!");
@@ -214,16 +216,14 @@ public class simEngine {
             System.out.println("Loading of " + network +" config successful, running '" + simConfig.getNetTitle() + "'!");
 
             for(NetworkAgent agent: agents) 
-                runSimulationForAgent(new SelfishRoutingAgent(), simConfig, currentNetwork);
+                runSimulationForAgent(agent, simConfig, currentNetwork);
 
             finalExport.put(network, currentNetwork);
         }
 
 
         exportSimulationsToFile(SimulationName, finalExport);
-        //TODO set the correct agents here!
-        //runSimulationForAgent(new Agent2(), simConfig, simulation);
-        //runSimulationForAgent(new Agent3(), simConfig, simulation);
+        
         System.out.println("GameTheory simEngine finished, exiting!");
     }
 }
