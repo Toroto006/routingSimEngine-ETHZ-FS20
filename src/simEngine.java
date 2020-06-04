@@ -101,9 +101,6 @@ public class simEngine {
         return ret;
     }
 
-
-
-
     /**
      * This will export the simulation, s.t. the visualizer can use it
      */
@@ -174,6 +171,7 @@ public class simEngine {
                 //Add the cost of this agent to the network
                 networkCostGraph.addAgent(agentPath.get(i), agentPath.get(i+1));
             }
+            networkCostGraph.calculateAllCosts();
             // System.out.println(doneAgents + " done and current costMatrix:\n" + networkCostGraph.toString());
         }
         return networkCostGraph;
@@ -193,10 +191,9 @@ public class simEngine {
     }
 
     public static void main(String[] args) throws Exception {
-        //TODO figure out a better way of changing networks/do all of them after each other
         String SimulationName = "Simulation";
-        String[] networks = {"BrassParadoxFast1", "BrassParadoxSlow1"};
-
+        //String[] networks = {"BrassParadoxFast1", "BrassParadoxSlow1"};
+        String[] networks = {"TestNetwork1", "TestNetwork2", "TestNetwork3"};
         //TODO set the correct agents here!
         NetworkAgent[] agents = {new SelfishRoutingAgent()};
 
@@ -223,7 +220,6 @@ public class simEngine {
 
 
         exportSimulationsToFile(SimulationName, finalExport);
-        
         System.out.println("GameTheory simEngine finished, exiting!");
     }
 }

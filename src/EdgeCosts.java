@@ -33,7 +33,7 @@ public class EdgeCosts {
      * @param j to node
      * @return cost calculated
      */
-    public int getEdgeCost(int i, int j) {
+    public Float getEdgeCost(int i, int j) {
         return edges.get(createKey(i, j)).getCost();
     }
 

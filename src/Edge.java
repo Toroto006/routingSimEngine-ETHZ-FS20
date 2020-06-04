@@ -9,7 +9,7 @@ public class Edge {
         agents = 0;
     }
 
-    public int getCost() {
+    public Float getCost() {
         return costFct.getCost(agents);
     }
 
