@@ -11,14 +11,10 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static utils.UtilFuntions.readAllBytesJava7;
+import static utils.UtilFuntions.readFileAsJSON;
+
 public class SimEngine {
-    // Read file content into string with - Files.readAllBytes(Path path)
-    // https://howtodoinjava.com/java/io/java-read-file-to-string-examples/
-    private static String readAllBytesJava7(String filePath) throws IOException {
-        String content = "";
-        content = new String(Files.readAllBytes(Paths.get(filePath)));
-        return content;
-    }
 
     /**
      * import network json, every vertex except dest has to hav e one outgoing edge
@@ -30,14 +26,7 @@ public class SimEngine {
         // we give the nodes numbers in lexicographic order for internal purpose
         // e.g. a graph with A B C as nodes will internally be a adj. matrix of size 3, where 0 is A
         String filePath = "./networks/" + simulation + ".json";
-        String jsonConfigString = null;
-        try {
-            jsonConfigString = readAllBytesJava7(filePath);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new Exception("Loading the json file was not successful!");
-        }
-        JSONObject jsonObject = new JSONObject(jsonConfigString);
+        JSONObject jsonObject = readFileAsJSON(filePath);
         // From now do convertion to config
         String[] nodes = jsonObject.getJSONArray("nodes").toList().toArray(new String[0]);
         int vertices = nodes.length;
@@ -209,7 +198,7 @@ public class SimEngine {
             
         }
 
-        JSONObject data = export.getJSONObject(agent.getClass().getName());
+        JSONObject data = export.getJSONObject(agent.getClass().getSimpleName());
         JSONArray arrEdges = data.getJSONArray("edges");
         for(int[] ls : outEdges) {
             for(int i = 0; i < ls.length; i++) {
@@ -225,7 +214,7 @@ public class SimEngine {
 
     private static void runSimulationForAgent(NetworkAgent networkAgent, SimConfig simConfig, JSONObject export)
             throws Exception {
-        String agentName = networkAgent.getClass().getName();
+        String agentName = networkAgent.getClass().getSimpleName();
         System.out.println("Starting the simulation of " + agentName + "!");
 
         initialiseExport(simConfig, agentName, export);
