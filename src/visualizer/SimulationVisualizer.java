@@ -1,6 +1,5 @@
 package visualizer;
 
-import com.sun.org.apache.bcel.internal.generic.JsrInstruction;
 import org.graphstream.algorithm.generator.DorogovtsevMendesGenerator;
 import org.graphstream.algorithm.generator.Generator;
 import org.graphstream.algorithm.randomWalk.RandomWalk;

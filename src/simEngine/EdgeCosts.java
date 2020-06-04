@@ -39,7 +39,7 @@ public class EdgeCosts {
      * @return cost calculated
      */
     public Float getEdgeCost(int i, int j) {
-        return edges.get(createKey(i, j)).getCost();
+        return edges.get(createKey(i, j)).getCost(0);
     }
 
     public Float getEdgeCostCustomAgents(int i, int j, int t) {

@@ -2,6 +2,7 @@ package simEngine;
 
 import agents.NetworkAgent;
 import agents.SelfishRoutingAgent;
+import agents.TaxedSelfishRoutingAgent;
 import org.json.*;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -243,10 +244,11 @@ public class SimEngine {
 
     public static void main(String[] args) throws Exception {
         String SimulationName = "Simulation";
-        String[] networks = {"BraessParadoxFast1", "BraessParadoxSlow1"};
+        //String[] networks = {"BraessParadoxFast1", "BraessParadoxSlow1"};
+        String[] networks = {"BraessParadoxSlow1"};
         //String[] networks = {"TestNetwork1", "TestNetwork2", "TestNetwork3"};
         //TODO set the correct agents here!
-        NetworkAgent[] agents = {new SelfishRoutingAgent()};
+        NetworkAgent[] agents = {new TaxedSelfishRoutingAgent()};
 
         System.out.println("GameTheory simEngine.simEngine started!\n");
         
