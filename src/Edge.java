@@ -6,7 +6,7 @@ public class Edge {
         if (costFct == null)
             throw new NullPointerException("CostFct can not be null!");
         this.costFct = costFct;
-        agents = 0;
+        agents = 1;
     }
 
     public Float getCost() {
@@ -22,10 +22,14 @@ public class Edge {
     }
 
     public int getAgents() {
-        return this.agents;
+        return this.agents-1;
     }
 
     public CostFct getCostFct() {
         return costFct;
+    }
+
+    public Float getCost(int t) {
+        return costFct.getCost(t);
     }
 }
