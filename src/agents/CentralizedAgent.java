@@ -8,20 +8,23 @@ import simEngine.SimConfig;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 public class CentralizedAgent implements NetworkAgent {
-    private HashMap<Integer[], Float> distributionCost = new HashMap<Integer[], Float>();
+    HashMap<Integer, LinkedList<Integer>> solutions;
+    private int totalAgents;
+    private HashMap<Integer[], Float> distributionCost = new HashMap<>();
     private ArrayList<LinkedList<Integer>> uniquePaths;
     private int n;
 
 
     @Override
     public LinkedList<Integer> agentDecide(NetworkCostGraph ncg, EdgeCosts ec, int decidedAgents) {
-        // need a way to get access to total amount of agents by either passing SimConfig or just number to agentDecide
-        int a = getAmountOfAgents();
-        HashMap<Integer, LinkedList<Integer>> solutions = new HashMap<>(a);
         // either calculate solution and use it or just use pre-calculated solution
         if (decidedAgents == 0 || solutions.isEmpty()) {
+            // need a way to get access to total amount of agents by either passing SimConfig or just number to agentDecide
+            totalAgents = getAmountOfAgents();
+            solutions = new HashMap<>(totalAgents);
             solutions = completeSolution(ncg, ec);
         }
         return solutions.get(decidedAgents);
@@ -40,9 +43,38 @@ public class CentralizedAgent implements NetworkAgent {
         uniquePaths = getUniquePaths(ncg);
         n = uniquePaths.size();
 
+        // calculate all distribution costs
+        recDistributionCost(0, new Integer[n], totalAgents);
 
+        // find minimal value of all distribution costs
+        float min = Integer.MAX_VALUE;
+        for (Map.Entry<Integer[], Float> current : distributionCost.entrySet()) {
+            min = Math.min(min, current.getValue());
+        }
 
-        return null;
+        // save all distributions that create a minimal value in list
+        ArrayList<Integer[]> bestDistributions = new ArrayList<>();
+        for (Map.Entry<Integer[], Float> current : distributionCost.entrySet()) {
+            if (current.getValue() == min) {
+                bestDistributions.add(current.getKey());
+            }
+        }
+
+        // do not know how to handle multiple minimal distributions
+        // for now just choosing first one
+        Integer[] bestDistribution = bestDistributions.get(0);
+
+        HashMap<Integer, LinkedList<Integer>> solutionsPerAgent = new HashMap<>(totalAgents);
+        int agentsum = 0;
+        for (int i = 0; i < bestDistribution.length; i++) {
+            int agents = bestDistribution[i];
+            for (int j = 0; j < agents; j++) {
+                solutionsPerAgent.put(agentsum+j, uniquePaths.get(i));
+            }
+            agentsum += agents;
+        }
+
+        return solutionsPerAgent;
     }
 
     /**
@@ -51,9 +83,13 @@ public class CentralizedAgent implements NetworkAgent {
      */
     public void recDistributionCost(int current, Integer[] distribution, int leftToDistribute) {
         if (current == n) {
-            distribution[n] = leftToDistribute;
-            distributionCost.put(distribution, )
-            return
+            distribution[current] = leftToDistribute;
+            distributionCost.put(distribution, calcDistributionCost(distribution));
+            return;
+        }
+        for (int i = 0; i < leftToDistribute; i++) {
+            distribution[current] = i;
+            recDistributionCost(current+1, distribution, leftToDistribute-1);
         }
     }
 
@@ -71,7 +107,7 @@ public class CentralizedAgent implements NetworkAgent {
      * Calculate cost of a given path.
      *
      * @param path path as a list of nodes
-     * @param ec   an object to figure out how much an edge costs, given different amounts of agents on it
+     * @param ec an object to figure out how much an edge costs, given different amounts of agents on it
      * @return Cost as a real value.
      */
     public Float calcPathCost(LinkedList<Integer> path, EdgeCosts ec) {
@@ -85,6 +121,6 @@ public class CentralizedAgent implements NetworkAgent {
      * @return Cost to route agents according to distribution over paths
      */
     public Float calcDistributionCost(Integer[] distribution) {
-
+        return null;
     }
 }
