@@ -5,6 +5,6 @@ public interface CostFct {
      * @param t the amount of agents on this edge
      * @return the cost if you go over this edge
      */
-    public int getCost(int t);
+    public Float getCost(int t);
 
 }

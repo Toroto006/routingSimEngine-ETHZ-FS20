@@ -2,21 +2,21 @@
  * This class is used to get the network and the cost of each edge
  */
 public class NetworkCostGraph extends NetworkGraph{
-    protected int[][] adjMatrix;
+    protected Float[][] adjMatrix;
 
     public NetworkCostGraph(int numVertices) {
         super(numVertices);
-        adjMatrix = new int[numVertices][numVertices];
+        adjMatrix = new Float[numVertices][numVertices];
     }
 
     public NetworkCostGraph(NetworkGraph networkGraph) {
         super(networkGraph.numVertices);
-        adjMatrix = new int[numVertices][numVertices];
+        adjMatrix = new Float[numVertices][numVertices];
         this.edgeCosts.copy(networkGraph.edgeCosts);
         calculateAllCosts();
     }
 
-    public int getLatencyCost(int i, int j) {
+    public Float getLatencyCost(int i, int j) {
         return adjMatrix[i][j];
     }
 
@@ -26,7 +26,7 @@ public class NetworkCostGraph extends NetworkGraph{
     public void calculateAllCosts() {
         for (int i = 0; i < numVertices; i++) {
             for (int j = 0; j < numVertices; j++) {
-                int val = Integer.MAX_VALUE;
+                Float val = Float.MAX_VALUE;
                 if (existsEdge(i, j))
                     val = edgeCosts.getEdgeCost(i, j);
                 adjMatrix[i][j] = val;
@@ -41,8 +41,8 @@ public class NetworkCostGraph extends NetworkGraph{
         StringBuilder s = new StringBuilder();
         for (int i = 0; i < numVertices; i++) {
             s.append(i).append(": ");
-            for (int j : adjMatrix[i]) {
-                if (j == Integer.MAX_VALUE)
+            for (Float j : adjMatrix[i]) {
+                if (j == Float.MAX_VALUE)
                     s.append("∞ ");
                 else
                     s.append(j).append(" ");

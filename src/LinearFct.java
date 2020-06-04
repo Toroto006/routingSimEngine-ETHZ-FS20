@@ -8,8 +8,8 @@ public class LinearFct implements CostFct {
     }
 
     @Override
-    public int getCost(int t) {
-        return Math.round(a*t + b);
+    public Float getCost(int t) {
+        return a*t + b;
     }
 
     @Override
