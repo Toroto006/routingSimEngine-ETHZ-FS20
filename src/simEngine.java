@@ -43,7 +43,7 @@ public class simEngine {
         NetworkGraph networkGraph = new NetworkGraph(vertices);
         //Now read the edges
 
-        Pattern pattern = Pattern.compile("(\\d*\\.?\\d*)t\\+(\\d*\\.?\\d*)", Pattern.MULTILINE);
+        Pattern pattern = Pattern.compile("(\\d*\\.?\\d*)\\*?t\\+(\\d*\\.?\\d*)", Pattern.MULTILINE);
 
         for(Object o : jsonObject.getJSONArray("edges")) {
             if (!(o instanceof JSONObject))
