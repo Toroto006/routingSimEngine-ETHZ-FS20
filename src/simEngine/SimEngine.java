@@ -137,7 +137,8 @@ public class SimEngine {
             JSONArray connection = new JSONArray(c);
             jsTemp.put("connection", connection);
             jsTemp.put("cost", edge.getCostFct().toString());
-            JSONArray usage = new JSONArray();
+            int[] t = {0};
+            JSONArray usage = new JSONArray(t);
             jsTemp.put("usage", usage);
             jsEdges.put(jsTemp);
         }
@@ -188,6 +189,7 @@ public class SimEngine {
         networkCostGraph.calculateAllCosts();
         //System.out.println("Start costMatrix:\n" + networkCostGraph.toString());
         for (int doneAgents = 0; doneAgents < simConfig.getAmountOfAgents(); doneAgents++) {
+
             // Run one agent
             LinkedList<Integer> agentPath = agent.agentDecide(networkCostGraph, networkCostGraph.getEdgeCosts(),
                     doneAgents);
@@ -197,8 +199,7 @@ public class SimEngine {
             }
             networkCostGraph.calculateAllCosts();
 
-            
-            if(doneAgents > 0 && doneAgents % simConfig.getAgentsPerStep() == 0 || doneAgents == simConfig.getAmountOfAgents() - 1) {
+            if((doneAgents + 1) % simConfig.getAgentsPerStep() == 0) {
                 Map<String, Edge> mapEdges = new TreeMap<String, Edge>(simConfig.getNetworkGraph().getEdges());
                 int[] arr = new int[mapEdges.size()];
                 int i = 0;
@@ -206,6 +207,7 @@ public class SimEngine {
                     arr[i++] = e.getAgents();
                 outEdges.add(arr);
             }
+            
             
         }
 
