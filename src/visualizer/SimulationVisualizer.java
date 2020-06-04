@@ -43,8 +43,8 @@ public class SimulationVisualizer {
     public static void main(String[] args) {
         System.out.println("Starting SimulationVisualizer!");
         SimulationVisualizer simVis = new SimulationVisualizer();
-        simVis.TestRandomWalk();
-        System.exit(-1);
+        //simVis.TestRandomWalk();
+        //System.exit(-1);
         ArrayList<JSONObject> sims = getSimulationsFromJson("Simulation_out.json");
         for (JSONObject sim: sims) {
             Graph g = createGraphFromJson(sim);

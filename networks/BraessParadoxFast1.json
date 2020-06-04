@@ -9,34 +9,34 @@
     "c",
     "d"
   ],
-  "edges": [
+  "edges" : [
     {
       "connection": [
         "a",
         "b"
       ],
-      "cost": "0t+45"
+      "cost": "0.01t+0"
     },
     {
       "connection": [
         "c",
         "d"
       ],
-      "cost": "0t+45"
+      "cost": "0.01t+0"
     },
     {
       "connection": [
         "a",
         "c"
       ],
-      "cost": "0.01t+0"
+      "cost": "0t+45"
     },
     {
       "connection": [
         "b",
         "d"
       ],
-      "cost": "0.01t+0"
+      "cost": "0t+45"
     }
   ]
 }
