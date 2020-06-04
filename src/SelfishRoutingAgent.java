@@ -3,7 +3,7 @@ import java.util.LinkedList;
 public class SelfishRoutingAgent implements NetworkAgent{
 
     private NetworkCostGraph ncg;
-    private  int cost [];
+    private  double cost [];
     private int predecessor[];
 
     /**
@@ -20,7 +20,7 @@ public class SelfishRoutingAgent implements NetworkAgent{
         int last = this.ncg.numVertices - 1;
 
         /* -- initialization -- */
-        cost = new int[last + 1];
+        cost = new double[last + 1];
         predecessor = new int[last + 1];
         LinkedList<Integer> nodesLeft = new LinkedList<>();
 
@@ -47,7 +47,7 @@ public class SelfishRoutingAgent implements NetworkAgent{
             for (int v:nodesLeft
                  ) {
                 if(ec.contains(u, v)){
-                    updateCost(u, v, ncg);
+                    updateCost(u, v, ec);
                 }
             }
         }
@@ -62,8 +62,17 @@ public class SelfishRoutingAgent implements NetworkAgent{
         return ret;
     }
 
+    private void updateCost(int u, int v, EdgeCosts ec){
+        double costs = cost[u] + ec.getEdgeCost(u, v);
+        if(costs < cost[v]){
+            cost[v] = costs;
+            predecessor[v] = u;
+        }
+    }
+
+    //TODO currently not used, ncg.getLatency gives always the same value back?!
     private void updateCost(int u, int v, NetworkCostGraph ncg){
-        int costs = cost[u] + ncg.getLatencyCost(u, v);
+        double costs = cost[u] + ncg.getLatencyCost(u, v);
         if(costs < cost[v]){
             cost[v] = costs;
             predecessor[v] = u;
