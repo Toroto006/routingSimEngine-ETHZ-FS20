@@ -1,5 +1,6 @@
 package simEngine;
 
+import agents.CentralizedAgent;
 import agents.NetworkAgent;
 import agents.SelfishRoutingAgent;
 import agents.TaxedSelfishRoutingAgent;
@@ -246,7 +247,8 @@ public class SimEngine {
         NetworkAgent[] agents = {
                 new SelfishRoutingAgent(),
                 new TaxedSelfishRoutingAgent(),
-                new TaxedSelfishRoutingAgent(new LinearFct(2f, 1f), "TaxedClassSelfishRoutingAgent")};
+                new TaxedSelfishRoutingAgent(new LinearFct(2f, 1f), "TaxedClassSelfishRoutingAgent"),
+                new CentralizedAgent()};
         System.out.println("GameTheory simEngine.simEngine started!\n");
 
         JSONObject finalExport = new JSONObject();

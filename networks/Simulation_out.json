@@ -25,6 +25,11 @@
             0,
             2000,
             3125
+          ],
+          "CentralizedAgent": [
+            0,
+            2000,
+            4000
           ]
         },
         "connection": [
@@ -49,6 +54,11 @@
             0,
             0,
             875
+          ],
+          "CentralizedAgent": [
+            0,
+            0,
+            0
           ]
         },
         "connection": [
@@ -73,6 +83,11 @@
             0,
             2000,
             2250
+          ],
+          "CentralizedAgent": [
+            0,
+            2000,
+            3999
           ]
         },
         "connection": [
@@ -97,6 +112,11 @@
             0,
             0,
             875
+          ],
+          "CentralizedAgent": [
+            0,
+            0,
+            1
           ]
         },
         "connection": [
@@ -121,6 +141,11 @@
             0,
             2000,
             3125
+          ],
+          "CentralizedAgent": [
+            0,
+            2000,
+            3999
           ]
         },
         "connection": [
@@ -157,6 +182,11 @@
             0,
             1000,
             2000
+          ],
+          "CentralizedAgent": [
+            0,
+            2000,
+            3999
           ]
         },
         "connection": [
@@ -181,6 +211,11 @@
             0,
             1000,
             2000
+          ],
+          "CentralizedAgent": [
+            0,
+            0,
+            1
           ]
         },
         "connection": [
@@ -205,6 +240,11 @@
             0,
             1000,
             2000
+          ],
+          "CentralizedAgent": [
+            0,
+            2000,
+            3999
           ]
         },
         "connection": [
@@ -229,6 +269,11 @@
             0,
             1000,
             2000
+          ],
+          "CentralizedAgent": [
+            0,
+            0,
+            1
           ]
         },
         "connection": [
