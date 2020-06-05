@@ -1,5 +1,6 @@
 package simEngine;
 
+import agents.CentralizedAgent;
 import agents.NetworkAgent;
 import agents.SelfishRoutingAgent;
 import agents.TaxedSelfishRoutingAgent;
@@ -244,11 +245,11 @@ public class SimEngine {
 
     public static void main(String[] args) throws Exception {
         String SimulationName = "Simulation";
-        //String[] networks = {"BraessParadoxFast1", "BraessParadoxSlow1"};
-        String[] networks = {"BraessParadoxSlow1"};
+        String[] networks = {"BraessParadoxFast1", "BraessParadoxSlow1"};
+        //String[] networks = {"BraessParadoxSlow1"};
         //String[] networks = {"TestNetwork1", "TestNetwork2", "TestNetwork3"};
         //TODO set the correct agents here!
-        NetworkAgent[] agents = {new TaxedSelfishRoutingAgent()};
+        NetworkAgent[] agents = {new SelfishRoutingAgent(), new TaxedSelfishRoutingAgent()};
 
         System.out.println("GameTheory simEngine.simEngine started!\n");
         

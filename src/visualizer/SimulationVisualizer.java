@@ -71,7 +71,7 @@ public class SimulationVisualizer {
 
     public static void main(String[] args) {
         System.out.println("Starting SimulationVisualizer!");
-        SimulationVisualizer simVis = new SimulationVisualizer();
+        //SimulationVisualizer simVis = new SimulationVisualizer();
         //simVis.TestRandomWalk();
         //System.exit(-1);
         ArrayList<JSONObject> sims = getSimulationsFromJson("Simulation_out");
