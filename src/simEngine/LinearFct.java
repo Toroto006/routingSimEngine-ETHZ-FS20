@@ -9,8 +9,13 @@ public class LinearFct implements CostFct {
         this.b = b;
     }
 
+
     @Override
     public Float getCost(int t) {
+        return a*t + b;
+    }
+
+    public double getCost(double t) {
         return a*t + b;
     }
 

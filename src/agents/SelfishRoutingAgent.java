@@ -8,6 +8,12 @@ public class SelfishRoutingAgent implements NetworkAgent {
 
     private double cost[];
     private int predecessor[];
+    private String name = "SelfishRoutingAgent";
+
+    @Override
+    public String getName() {
+        return this.name;
+    }
 
     /**
      * Basically it applies a Dijkstra algo. on the network and gives the shortest path back

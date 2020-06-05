@@ -16,6 +16,12 @@ public class CentralizedAgent implements NetworkAgent {
     int[] minDistCombination;
     static private ArrayList<LinkedList<Integer>> uniquePaths;
     static private int nrUniquePaths;
+    static private String name = "CentralizedAgent";
+
+    @Override
+    public String getName() {
+        return this.name;
+    }
 
     LinkedList<Integer>[] adjList;
     boolean[] visitedDFS;
