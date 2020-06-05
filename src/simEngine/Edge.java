@@ -41,7 +41,7 @@ public class Edge {
         return costFct;
     }
 
-    public Float getCost(int t) {
+    public Float getCostAgents(int t) {
         return costFct.getCost(t);
     }
 

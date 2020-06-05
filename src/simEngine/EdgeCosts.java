@@ -47,7 +47,7 @@ public class EdgeCosts {
     }
 
     public Float getEdgeCostCustomAgents(int i, int j, int t) {
-        return edges.get(createKey(i, j)).getCost(t);
+        return edges.get(createKey(i, j)).getCostAgents(t);
     }
 
     public boolean contains(int i, int j) {
