@@ -6,6 +6,7 @@ import agents.SelfishRoutingAgent;
 import agents.TaxedSelfishRoutingAgent;
 import agents.TaxedClassSelfishRoutingAgent;
 import org.json.*;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,7 +22,7 @@ public class SimEngine {
 
     /**
      * import network json, every vertex except dest has to hav e one outgoing edge
-     * 
+     *
      * @param simulation
      */
     private static SimConfig importSimulationConfiguration(String simulation) throws Exception {
@@ -42,7 +43,7 @@ public class SimEngine {
         for (Object o : jsonObject.getJSONArray("edges")) {
             if (!(o instanceof JSONObject))
                 throw new Exception("Decoding the json was not successful, edges are wrong/not given!");
-            JSONObject edge = (JSONObject)o;
+            JSONObject edge = (JSONObject) o;
             //System.out.println(o.toString() + "\n");
 
             CostFct c = null;
@@ -71,7 +72,8 @@ public class SimEngine {
         int agentsPerStep = 0;
         try {
             agentsPerStep = jsonObject.getInt("agentsPerStep");
-        } catch (JSONException e) {}
+        } catch (JSONException e) {
+        }
         if (agentsPerStep == 0)
             agentsPerStep = amountOfAgents;
         String networkTitle = jsonObject.getString("networkTitle");
@@ -102,18 +104,18 @@ public class SimEngine {
 
     /**
      * This will initialise the JSONObject of one Simulation
-     * 
+     *
      * @param simConfig
-     * @param nameOfAgent
      * @param out
      */
-    private static void initialiseExport(SimConfig simConfig, String nameOfAgent, JSONObject out) throws Exception {
+    private static void initialiseJSON(SimConfig simConfig, JSONObject out) throws Exception {
 
-        JSONObject export = new JSONObject();
+        out.put("networkTitle", simConfig.getNetTitle());
+        out.put("amountOfAgents", simConfig.getAmountOfAgents());
 
         String[] nodes = simConfig.getNodes();
         JSONArray jsNodes = new JSONArray(nodes);
-        export.put("nodes", (Object) jsNodes);
+        out.put("nodes", (Object) jsNodes);
 
         Map<String, Edge> unsortedEdges = simConfig.getNetworkGraph().getEdges();
         Map<String, Edge> sortedEdges = new TreeMap<String, Edge>(unsortedEdges);
@@ -131,27 +133,26 @@ public class SimEngine {
             JSONObject jsTemp = new JSONObject();
 
             String[] c;
-            if(edge.getDirection()){
-                c = new String[]{ nodes[iNodes[0]], nodes[iNodes[1]] };
+            if (edge.getDirection()) {
+                c = new String[]{nodes[iNodes[0]], nodes[iNodes[1]]};
             } else {
-                c = new String[]{ nodes[iNodes[1]], nodes[iNodes[0]] };
+                c = new String[]{nodes[iNodes[1]], nodes[iNodes[0]]};
             }
 
             JSONArray connection = new JSONArray(c);
             jsTemp.put("connection", connection);
             jsTemp.put("cost", edge.getCostFct().toString());
-            int[] t = {0};
-            JSONArray usage = new JSONArray(t);
-            jsTemp.put("usage", usage);
+            jsTemp.put("usage", new JSONObject());
+
+
             jsEdges.put(jsTemp);
         }
-        export.put("edges", jsEdges);
-        out.put(nameOfAgent, export);
+        out.put("edges", jsEdges);
     }
 
     /**
      * This will export the simulation, s.t. the visualizer can use it
-     * 
+     *
      * @param exportName
      * @param export
      */
@@ -177,15 +178,16 @@ public class SimEngine {
 
     /**
      * This runs the whole simulation for one agent
-     * 
+     *
      * @param simConfig the configuration of the simulation
      * @param agent     the agent to use for this simulation
      * @return
      */
     private static NetworkCostGraph runSimulation(final SimConfig simConfig, NetworkAgent agent, JSONObject export) {
 
-        List<int[]> outEdges = new ArrayList<int[]>();
-
+        int totalEntries = simConfig.getAmountOfAgents() / simConfig.getAgentsPerStep() + 1;
+        int[][] outEdges = new int[simConfig.getNetworkGraph().getEdges().size()][totalEntries];
+        int j = 1;
         NetworkCostGraph networkCostGraph = new NetworkCostGraph(simConfig.getNetworkGraph());
         networkCostGraph.calculateAllCosts();
         //System.out.println("Start costMatrix:\n" + networkCostGraph.toString());
@@ -200,26 +202,25 @@ public class SimEngine {
             }
             networkCostGraph.calculateAllCosts();
 
-            if((doneAgents + 1) % simConfig.getAgentsPerStep() == 0) {
+            if ((doneAgents + 1) % simConfig.getAgentsPerStep() == 0) {
                 Map<String, Edge> mapEdges = new TreeMap<String, Edge>(networkCostGraph.getEdges());
-                int[] arr = new int[mapEdges.size()];
                 int i = 0;
-                for(Edge e: mapEdges.values())
-                    arr[i++] = e.getAgents();
-                outEdges.add(arr);
+                for (Edge e : mapEdges.values())
+                    outEdges[i++][j] = e.getAgents();
+                j++;
             }
-            
-            
+
+
         }
 
-        JSONObject data = export.getJSONObject(agent.getClass().getSimpleName());
-        JSONArray arrEdges = data.getJSONArray("edges");
-        for(int[] ls : outEdges) {
-            for(int i = 0; i < ls.length; i++) {
-                JSONObject obj = (JSONObject)arrEdges.get(i);
-                obj.getJSONArray("usage").put(ls[i]);
-            }
+        JSONArray arrEdges = export.getJSONArray("edges");
+        for (int i = 0; i < outEdges.length; i++) {
+            JSONObject obj = (JSONObject) arrEdges.get(i);
+            JSONArray path = new JSONArray(outEdges[i]);
+
+            obj.getJSONObject("usage").put(agent.getClass().getSimpleName(), path);
         }
+
 
         // System.out.println(doneAgents + " done and current costMatrix:\n" +
         // networkCostGraph.toString());
@@ -231,7 +232,6 @@ public class SimEngine {
         String agentName = networkAgent.getClass().getSimpleName();
         System.out.println("Starting the simulation of " + agentName + "!");
 
-        initialiseExport(simConfig, agentName, export);
         runSimulation(simConfig, networkAgent, export);
         // TODO actually somehow return simulation result to export
         // try {
@@ -246,16 +246,16 @@ public class SimEngine {
     public static void main(String[] args) throws Exception {
         String SimulationName = "Simulation";
         String[] networks = {"BraessParadoxFast1", "BraessParadoxSlow1"};
-        //String[] networks = {"BraessParadoxFast1"};
+        //String[] networks = {"BraessParadoxSlow1"};
         //String[] networks = {"TestNetwork1", "TestNetwork2", "TestNetwork3"};
         //TODO set the correct agents here!
         NetworkAgent[] agents = {new SelfishRoutingAgent(), new TaxedSelfishRoutingAgent(), new TaxedClassSelfishRoutingAgent()};
-
         System.out.println("GameTheory simEngine.simEngine started!\n");
-        
+
         JSONObject finalExport = new JSONObject();
+
         for (String network : networks) {
-            JSONObject currentNetwork = new JSONObject();
+
             SimConfig simConfig = null;
             try {
                 simConfig = importSimulationConfiguration(network);
@@ -264,6 +264,9 @@ public class SimEngine {
                 System.out.println("Loading of " + network + " config was not successful, exiting!");
                 System.exit(-1);
             }
+            JSONObject currentNetwork = new JSONObject();
+            initialiseJSON(simConfig, currentNetwork);
+
             System.out.println(
                     "Loading of " + network + " config successful, running '" + simConfig.getNetTitle() + "'!");
 
@@ -271,8 +274,7 @@ public class SimEngine {
                 runSimulationForAgent(agent, simConfig, currentNetwork);
 
             System.out.println("Finished all simulations of " + simConfig.getNetTitle() + "'!\n");
-            currentNetwork.put("networkTitle", simConfig.getNetTitle());
-            currentNetwork.put("amountOfAgents", simConfig.getAmountOfAgents());
+
             finalExport.put(network, currentNetwork);
         }
 
