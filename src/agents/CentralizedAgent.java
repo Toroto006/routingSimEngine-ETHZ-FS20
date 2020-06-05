@@ -21,6 +21,13 @@ public class CentralizedAgent implements NetworkAgent {
         return this.name;
     }
 
+    LinkedList<Integer>[] adjList;
+    boolean[] visitedDFS;
+    boolean[] visitedPath;
+    // list of paths (LinkedList) for each node
+    ArrayList<ArrayList<LinkedList<Integer>>> pathsToDest;
+    int numVertices;
+
     @Override
     public LinkedList<Integer> agentDecide(NetworkCostGraph ncg, EdgeCosts ec1, int decidedAgents, int totalAgents) {
         // either calculate solution and use it or just use pre-calculated solution
@@ -82,7 +89,7 @@ public class CentralizedAgent implements NetworkAgent {
      * distribution-path-combination in DP table.
      */
     public void recDistributionCost(int current, Integer[] distribution, int leftToDistribute) {
-        if (current == nrUniquePaths) {
+        if (current == nrUniquePaths-1) {
             distribution[current] = leftToDistribute;
             distributionCost.put(distribution, calcDistributionCost(distribution));
             return;
@@ -102,85 +109,92 @@ public class CentralizedAgent implements NetworkAgent {
     public ArrayList<LinkedList<Integer>> getUniquePaths(NetworkCostGraph ncg) {
         int source = 0;
         int dest = ncg.getAdjMatrix().length - 1;
-        int numVertices = ncg.getNumVertices();
+        numVertices = ncg.getNumVertices();
 
         //create adjacency list
-        LinkedList<Integer>[] adjList = new LinkedList[numVertices];
+        adjList = new LinkedList[numVertices];
         for (int i = 0; i < adjList.length; i++) {
             adjList[i] = new LinkedList<Integer>();
             for (int j = 0; j < numVertices; j++) {
-                if (ncg.getAdjMatrix()[i][j] != 0) {
+                if (ncg.getAdjMatrix()[i][j] != Float.MAX_VALUE) {
                     adjList[i].add(j);
                 }
             }
         }
+        uniquePaths = new ArrayList<>();
+        printAllPaths(source, dest);
 
-        // use modified DFS to determine unique paths
-        boolean[] visitedDFS = new boolean[numVertices];
-        boolean[] visitedPath = new boolean[numVertices];
+        return uniquePaths;
+    }
 
-        Stack<Integer> stack = new Stack<>();
-        LinkedList<Integer> currentPath = new LinkedList<>();
-        ArrayList<LinkedList<Integer>> uniquePaths = new ArrayList<>();
+    // Prints all paths from
+    // 's' to 'd'
+    public void printAllPaths(int s, int d)
+    {
+        boolean[] isVisited = new boolean[numVertices];
+        ArrayList<Integer> pathList = new ArrayList<>();
 
-        stack.push(source);
+        //add source to path[]
+        pathList.add(s);
 
-        while(!stack.isEmpty()) {
-            int current = stack.peek();
+        //Call recursive utility
+        printAllPathsUtil(s, d, isVisited, pathList);
+    }
 
-            // add node to path if never been seen before in DFS and current path
-            if (!visitedDFS[current] && !visitedPath[current]) {
-                currentPath.add(current);
-                visitedDFS[current] = true;
-                visitedPath[current] = true;
-                //stack.pop(); //might double pop if current == dest, actually no popping yet
-            }
-            // found complete, new path from source to destination
-            if (current == dest) {
-                uniquePaths.add(currentPath);
-                currentPath.clear();
-                // backtrack to last node with unvisited neighbours -> done by stack, still need to unmark nodes up until then in visitedPath
-                int u = stack.peek();
-                while (visitedDFS[u]) {
-                    stack.pop();
-                    visitedPath[u] = false;
-                }
-                // make sure dest can be reached again
-                visitedDFS[dest] = false;
-                // use u as new current node
-                current = u;
-            }
-            // found node that was already in path
-            if (visitedPath[current] == true) {
-                current = stack.pop();
-                currentPath.removeLast();
-                visitedPath[current] = false;
-                while(visitedPath[current]) {
-                    stack.pop();
-                    // not updating visitedDFS because if it's true it has been technically processed by DFS
-                    visitedPath[current] = false;
-                    currentPath.removeLast();
-                    current = stack.peek();
-                }
-                // have found node that not has been in path, might have been in DFS
-                if (visitedDFS[current]) {
+    // A recursive function to print
+    // all paths from 'u' to 'd'.
+    // isVisited[] keeps track of
+    // vertices in current path.
+    // localPathList<> stores actual
+    // vertices in the current path
+    private void printAllPathsUtil(Integer u, Integer d,
+                                   boolean[] isVisited,
+                                   List<Integer> localPathList) {
 
-                }
-            }
-            if (visitedDFS[current]) {
+        // Mark the current node
+        isVisited[u] = true;
 
-            }
+        if (u.equals(d))
+        {
+            System.out.println(localPathList);
+            LinkedList<Integer> temp = new LinkedList<Integer>(localPathList);
+            uniquePaths.add(temp);
+            // if match found then no need to traverse more till depth
+            isVisited[u]= false;
+            return ;
+        }
 
+        // Recur for all the vertices
+        // adjacent to current vertex
+        for (Integer i : adjList[u])
+        {
+            if (!isVisited[i])
+            {
+                // store current node
+                // in path[]
+                localPathList.add(i);
+                printAllPathsUtil(i, d, isVisited, localPathList);
 
-            Iterator it = adjList[current].listIterator();
-
-            while (it.hasNext()) {
-                int v = (int) it.next();
-                if (!visitedDFS[v]) stack.push(v);
+                // remove current node
+                // in path[]
+                localPathList.remove(i);
             }
         }
 
-        return null;
+        // Mark the current node
+        isVisited[u] = false;
+    }
+
+
+    private void prependNodeToPath (int current, int next) {
+        Iterator<LinkedList<Integer>> it = pathsToDest.get(next).listIterator();
+        LinkedList<Integer> list = new LinkedList<>();
+        while (it.hasNext()) {
+            list.clear();
+            list.add(current);
+            list.addAll(it.next()); // now current is prepended to a path from next to dest
+            pathsToDest.get(current).add(list);
+        }
     }
 
     /**
