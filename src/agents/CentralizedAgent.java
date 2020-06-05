@@ -15,6 +15,11 @@ public class CentralizedAgent implements NetworkAgent {
     static private ArrayList<LinkedList<Integer>> uniquePaths;
     static private int nrUniquePaths;
 
+    boolean[] visitedDFS;
+    boolean[] visitedPath;
+    // list of paths (LinkedList) for each node
+    ArrayList<ArrayList<LinkedList<Integer>>> pathsToDest;
+
     @Override
     public LinkedList<Integer> agentDecide(NetworkCostGraph ncg, EdgeCosts ec1, int decidedAgents, int totalAgents) {
         // either calculate solution and use it or just use pre-calculated solution
@@ -110,42 +115,26 @@ public class CentralizedAgent implements NetworkAgent {
         }
 
         // use modified DFS to determine unique paths
-        boolean[] visitedDFS = new boolean[numVertices];
-        boolean[] visitedPath = new boolean[numVertices];
+        visitedDFS = new boolean[numVertices];
+        visitedPath = new boolean[numVertices];
 
         Stack<Integer> stack = new Stack<>();
         LinkedList<Integer> currentPath = new LinkedList<>();
-        ArrayList<LinkedList<Integer>> uniquePaths = new ArrayList<>();
+        uniquePaths = new ArrayList<>();
+        // list of paths (LinkedList) for each node
+        pathsToDest = new ArrayList<>(numVertices);
+        for (int i = 0; i < numVertices; i++) {
+            pathsToDest.add(new ArrayList<>());
+        }
 
         stack.push(source);
 
         while(!stack.isEmpty()) {
             int current = stack.peek();
 
-            // add node to path if never been seen before in DFS and current path
-            if (!visitedDFS[current] && !visitedPath[current]) {
-                currentPath.add(current);
-                visitedDFS[current] = true;
-                visitedPath[current] = true;
-                //stack.pop(); //might double pop if current == dest, actually no popping yet
-            }
-            // found complete, new path from source to destination
-            if (current == dest) {
-                uniquePaths.add(currentPath);
-                currentPath.clear();
-                // backtrack to last node with unvisited neighbours -> done by stack, still need to unmark nodes up until then in visitedPath
-                int u = stack.peek();
-                while (visitedDFS[u]) {
-                    stack.pop();
-                    visitedPath[u] = false;
-                }
-                // make sure dest can be reached again
-                visitedDFS[dest] = false;
-                // use u as new current node
-                current = u;
-            }
-            // found node that was already in path
+            // found node that was already in path, need to back up and delete corresponding edges
             if (visitedPath[current] == true) {
+                // go 1 node back
                 current = stack.pop();
                 currentPath.removeLast();
                 visitedPath[current] = false;
@@ -164,7 +153,28 @@ public class CentralizedAgent implements NetworkAgent {
             if (visitedDFS[current]) {
 
             }
-
+            // found complete, new path from source to destination
+            if (current == dest) {
+                uniquePaths.add(currentPath);
+                currentPath.clear();
+                // backtrack to last node with unvisited neighbours -> done by stack, still need to unmark nodes up until then in visitedPath
+                int u = stack.peek();
+                while (visitedDFS[u]) {
+                    stack.pop();
+                    visitedPath[u] = false;
+                }
+                // make sure dest can be reached again
+                visitedDFS[dest] = false;
+                // use u as new current node
+                current = u;
+            }
+            // add node to path if never been seen before in DFS and current path
+            if (!visitedDFS[current] && !visitedPath[current]) {
+                currentPath.add(current);
+                visitedDFS[current] = true;
+                visitedPath[current] = true;
+                //stack.pop(); //might double pop if current == dest, actually no popping yet
+            }
 
             Iterator it = adjList[current].listIterator();
 
@@ -175,6 +185,17 @@ public class CentralizedAgent implements NetworkAgent {
         }
 
         return null;
+    }
+
+    private void prependNodeToPath (int current, int next) {
+        Iterator<LinkedList<Integer>> it = pathsToDest.get(next).listIterator();
+        LinkedList<Integer> list = new LinkedList<>();
+        while (it.hasNext()) {
+            list.clear();
+            list.add(current);
+            list.addAll(it.next()); // now current is prepended to a path from next to dest
+            pathsToDest.get(current).add(list);
+        }
     }
 
     /**
