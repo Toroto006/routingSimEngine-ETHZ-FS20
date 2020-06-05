@@ -14,6 +14,12 @@ public class CentralizedAgent implements NetworkAgent {
     static private HashMap<Integer[], Double> distributionCost = new HashMap<>();
     static private ArrayList<LinkedList<Integer>> uniquePaths;
     static private int nrUniquePaths;
+    static private String name = "CentralizedAgent";
+
+    @Override
+    public String getName() {
+        return this.name;
+    }
 
     @Override
     public LinkedList<Integer> agentDecide(NetworkCostGraph ncg, EdgeCosts ec1, int decidedAgents, int totalAgents) {

@@ -1,21 +1,15 @@
 package simEngine;
 
-import agents.CentralizedAgent;
 import agents.NetworkAgent;
 import agents.SelfishRoutingAgent;
 import agents.TaxedSelfishRoutingAgent;
-import agents.TaxedClassSelfishRoutingAgent;
 import org.json.*;
 
 import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static utils.UtilFuntions.readAllBytesJava7;
 import static utils.UtilFuntions.readFileAsJSON;
 
 public class SimEngine {
@@ -218,7 +212,7 @@ public class SimEngine {
             JSONObject obj = (JSONObject) arrEdges.get(i);
             JSONArray path = new JSONArray(outEdges[i]);
 
-            obj.getJSONObject("usage").put(agent.getClass().getSimpleName(), path);
+            obj.getJSONObject("usage").put(agent.getName(), path);
         }
 
 
@@ -249,7 +243,10 @@ public class SimEngine {
         //String[] networks = {"BraessParadoxSlow1"};
         //String[] networks = {"TestNetwork1", "TestNetwork2", "TestNetwork3"};
         //TODO set the correct agents here!
-        NetworkAgent[] agents = {new SelfishRoutingAgent(), new TaxedSelfishRoutingAgent(), new TaxedClassSelfishRoutingAgent()};
+        NetworkAgent[] agents = {
+                new SelfishRoutingAgent(),
+                new TaxedSelfishRoutingAgent(),
+                new TaxedSelfishRoutingAgent(new LinearFct(2f, 1f), "TaxedClassSelfishRoutingAgent")};
         System.out.println("GameTheory simEngine.simEngine started!\n");
 
         JSONObject finalExport = new JSONObject();
