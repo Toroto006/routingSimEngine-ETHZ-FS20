@@ -55,7 +55,9 @@ public class EdgeCosts {
     }
 
     public void copy(EdgeCosts edgeCosts) {
-        this.edges.putAll(edgeCosts.edges);
+        for (Map.Entry<String, Edge> entry : edgeCosts.edges.entrySet()) {
+            edges.put(entry.getKey(), entry.getValue().copy());
+        }
     }
 
     public void addAgent(int i, int j) {

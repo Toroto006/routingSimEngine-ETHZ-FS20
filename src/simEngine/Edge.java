@@ -48,4 +48,8 @@ public class Edge {
     public Float getDerivativeCost() {
         return costFct.getDerivativeCost();
     }
+
+    public Edge copy() {
+        return new Edge(costFct, direction);
+    }
 }

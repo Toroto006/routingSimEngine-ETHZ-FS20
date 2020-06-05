@@ -145,8 +145,6 @@ public class SimEngine {
             jsEdges.put(jsTemp);
         }
         export.put("edges", jsEdges);
-
-        System.out.println("Simulation of " + nameOfAgent + " is finished");
         out.put(nameOfAgent, export);
     }
 
@@ -189,7 +187,7 @@ public class SimEngine {
 
         NetworkCostGraph networkCostGraph = new NetworkCostGraph(simConfig.getNetworkGraph());
         networkCostGraph.calculateAllCosts();
-        //System.out.println("Start costMatrix:\n" + networkCostGraph.toString());
+        System.out.println("Start costMatrix:\n" + networkCostGraph.toString());
         for (int doneAgents = 0; doneAgents < simConfig.getAmountOfAgents(); doneAgents++) {
 
             // Run one agent
@@ -202,7 +200,7 @@ public class SimEngine {
             networkCostGraph.calculateAllCosts();
 
             if((doneAgents + 1) % simConfig.getAgentsPerStep() == 0) {
-                Map<String, Edge> mapEdges = new TreeMap<String, Edge>(simConfig.getNetworkGraph().getEdges());
+                Map<String, Edge> mapEdges = new TreeMap<String, Edge>(networkCostGraph.getEdges());
                 int[] arr = new int[mapEdges.size()];
                 int i = 0;
                 for(Edge e: mapEdges.values())
@@ -233,23 +231,24 @@ public class SimEngine {
         System.out.println("Starting the simulation of " + agentName + "!");
 
         initialiseExport(simConfig, agentName, export);
-        NetworkCostGraph ncgDone = runSimulation(simConfig, networkAgent, export);
+        runSimulation(simConfig, networkAgent, export);
         // TODO actually somehow return simulation result to export
         // try {
         // exportSimulation(simConfig, ncgDone, agentName, out);
         // } catch (Exception e) {
         // e.printStackTrace();
         // }
+        System.out.println("Finished the simulation of " + agentName + "!");
 
     }
 
     public static void main(String[] args) throws Exception {
         String SimulationName = "Simulation";
-        String[] networks = {"BraessParadoxFast1", "BraessParadoxSlow1"};
-        //String[] networks = {"BraessParadoxSlow1"};
+        //String[] networks = {"BraessParadoxFast1", "BraessParadoxSlow1"};
+        String[] networks = {"BraessParadoxFast1"};
         //String[] networks = {"TestNetwork1", "TestNetwork2", "TestNetwork3"};
         //TODO set the correct agents here!
-        NetworkAgent[] agents = {new SelfishRoutingAgent(), new TaxedSelfishRoutingAgent()};
+        NetworkAgent[] agents = {new SelfishRoutingAgent()};
 
         System.out.println("GameTheory simEngine.simEngine started!\n");
         
