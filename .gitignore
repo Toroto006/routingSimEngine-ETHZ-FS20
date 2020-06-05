@@ -28,5 +28,6 @@ out
 .gradle/*
 gradle/*
 
-# VsCode settings #
+# IDE settings #
+.idea/*
 .vscode/*

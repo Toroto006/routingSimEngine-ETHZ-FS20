@@ -152,7 +152,7 @@ public class SimEngine {
      * @param export
      */
     private static void exportSimulationsToFile(String exportName, JSONObject export) throws Exception {
-        String filePath = "./networks/" + exportName + "_out.json";
+        String filePath = "./networks/finishedRuns/" + exportName + "_out.json";
         FileWriter file;
         file = new FileWriter(filePath);
         try {
