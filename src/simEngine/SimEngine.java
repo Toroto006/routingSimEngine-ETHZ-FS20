@@ -249,7 +249,7 @@ public class SimEngine {
         //String[] networks = {"BraessParadoxSlow1"};
         //String[] networks = {"TestNetwork1", "TestNetwork2", "TestNetwork3"};
         //TODO set the correct agents here!
-        NetworkAgent[] agents = {new SelfishRoutingAgent(), new TaxedSelfishRoutingAgent()};
+        NetworkAgent[] agents = {new SelfishRoutingAgent(), new TaxedSelfishRoutingAgent(), new CentralizedAgent()};
 
         System.out.println("GameTheory simEngine.simEngine started!\n");
         

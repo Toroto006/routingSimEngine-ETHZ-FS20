@@ -13,7 +13,7 @@ public class CentralizedAgent implements NetworkAgent {
     static private EdgeCosts ec;
     static private HashMap<Integer[], Double> distributionCost = new HashMap<>();
     static private ArrayList<LinkedList<Integer>> uniquePaths;
-    static private int n;
+    static private int nrUniquePaths;
 
     @Override
     public LinkedList<Integer> agentDecide(NetworkCostGraph ncg, EdgeCosts ec1, int decidedAgents, int totalAgents) {
@@ -35,10 +35,10 @@ public class CentralizedAgent implements NetworkAgent {
      */
     public HashMap<Integer, LinkedList<Integer>> completeSolution(NetworkCostGraph ncg) {
         uniquePaths = getUniquePaths(ncg);
-        n = uniquePaths.size();
+        nrUniquePaths = uniquePaths.size();
 
         // calculate all distribution costs
-        recDistributionCost(0, new Integer[n], totAgents);
+        recDistributionCost(0, new Integer[nrUniquePaths], totAgents);
 
         // find minimal value of all distribution costs
         double min = Integer.MAX_VALUE;
@@ -76,7 +76,7 @@ public class CentralizedAgent implements NetworkAgent {
      * distribution-path-combination in DP table.
      */
     public void recDistributionCost(int current, Integer[] distribution, int leftToDistribute) {
-        if (current == n) {
+        if (current == nrUniquePaths) {
             distribution[current] = leftToDistribute;
             distributionCost.put(distribution, calcDistributionCost(distribution));
             return;
@@ -94,6 +94,46 @@ public class CentralizedAgent implements NetworkAgent {
      * @return List of all unique paths.
      */
     public ArrayList<LinkedList<Integer>> getUniquePaths(NetworkCostGraph ncg) {
+        int source = 0;
+        int dest = ncg.getAdjMatrix().length - 1;
+        int numVertices = ncg.getNumVertices();
+
+        //create adjacency list
+        LinkedList<Integer>[] adjList = new LinkedList[numVertices];
+        for (int i = 0; i < adjList.length; i++) {
+            adjList[i] = new LinkedList<Integer>();
+            for (int j = 0; j < numVertices; j++) {
+                if (ncg.getAdjMatrix()[i][j] != 0) {
+                    adjList[i].add(j);
+                }
+            }
+        }
+
+        // use modified DFS to determine unique paths
+        boolean[] visitedDFS = new boolean[numVertices];
+        boolean[] visitedPath = new boolean[numVertices];
+
+        Stack<Integer> stack = new Stack<>();
+        LinkedList<Integer> currentPath = new LinkedList<>();
+        ArrayList<LinkedList<Integer>> uniquePaths = new ArrayList<>();
+
+        stack.push(source);
+
+        while(!stack.isEmpty()) {
+            int current = stack.pop();
+
+            if (!visitedDFS[current] && !visitedPath[current]) {
+                currentPath.add(current);
+            }
+
+            Iterator it = adjList[current].listIterator();
+
+            while (it.hasNext()) {
+                int v = (int) it.next();
+                if (!visitedDFS[v]) stack.push(v);
+            }
+        }
+
         return null;
     }
 

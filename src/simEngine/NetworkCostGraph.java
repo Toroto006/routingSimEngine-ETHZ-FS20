@@ -36,6 +36,10 @@ public class NetworkCostGraph extends NetworkGraph{
         }
     }
 
+    public Float[][] getAdjMatrix() {
+        return adjMatrix;
+    }
+
     // Print the matrix
     @Override
     public String toString() {
