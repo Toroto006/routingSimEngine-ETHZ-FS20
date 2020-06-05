@@ -45,7 +45,7 @@ public class TaxedSelfishRoutingAgent implements NetworkAgent {
             for (int v : nodesLeft
             ) {
                 if (ec.contains(u, v)) {
-                    updateCost(u, v, ec, decidedAgents);
+                    updateCost(u, v, ec);
                 }
             }
         }
@@ -61,10 +61,8 @@ public class TaxedSelfishRoutingAgent implements NetworkAgent {
         return ret;
     }
 
-    //TODO @Antoine: I implementet how it is defined with the new derivative fct
-    private void updateCost(int u, int v, EdgeCosts ec, int decidedAgents) {
-        //double costs = cost[u] + ec.getEdgeCostCustomAgents(u, v, decidedAgents) + factor * decidedAgents * (ec.getEdgeCostCustomAgents(u, v, decidedAgents + 1) - ec.getEdgeCostCustomAgents(u, v, decidedAgents + 1));
-        double costs = cost[u] + ec.getEdgeCostCustomAgents(u, v, decidedAgents) + decidedAgents * ec.getDerivativeEdgeCost(u, v);
+    private void updateCost(int u, int v, EdgeCosts ec) {
+        double costs = cost[u] + ec.getEdgeCostCustomAgents(u, v, ec.getAgentsOnEdge(u, v) + 1) + ec.getAgentsOnEdge(u, v) * ec.getDerivativeEdgeCost(u, v);
         if (costs < cost[v]) {
             cost[v] = costs;
             predecessor[v] = u;

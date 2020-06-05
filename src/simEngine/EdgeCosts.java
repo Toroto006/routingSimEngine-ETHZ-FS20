@@ -42,6 +42,10 @@ public class EdgeCosts {
         return edges.get(createKey(i, j)).getCost();
     }
 
+    public int getAgentsOnEdge(int i, int j){
+        return edges.get(createKey(i, j)).getAgents();
+    }
+
     public Float getDerivativeEdgeCost(int i, int j) {
         return edges.get(createKey(i, j)).getDerivativeCost();
     }
