@@ -44,4 +44,8 @@ public class Edge {
     public Float getCost(int t) {
         return costFct.getCost(t);
     }
+
+    public Float getDerivativeCost() {
+        return costFct.getDerivativeCost();
+    }
 }

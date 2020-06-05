@@ -15,6 +15,11 @@ public class LinearFct implements CostFct {
     }
 
     @Override
+    public Float getDerivativeCost() {
+        return a;
+    }
+
+    @Override
     public String toString() {
         return a + "*t+" + b;
     }
