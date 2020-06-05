@@ -2,13 +2,15 @@ package agents;
 
 import simEngine.EdgeCosts;
 import simEngine.NetworkCostGraph;
+
 import java.util.LinkedList;
 
 public class TaxedSelfishRoutingAgent implements NetworkAgent {
 
-    private  double cost [];
+    private double cost[];
     private int predecessor[];
     private double factor;
+
     @Override
     public LinkedList<Integer> agentDecide(NetworkCostGraph ncg, EdgeCosts ec, int decidedAgents, int totalAgents) {
 
@@ -21,7 +23,7 @@ public class TaxedSelfishRoutingAgent implements NetworkAgent {
         predecessor = new int[last + 1];
         LinkedList<Integer> nodesLeft = new LinkedList<>();
 
-        for(int i = 0; i <= last; i++){
+        for (int i = 0; i <= last; i++) {
             cost[i] = Integer.MAX_VALUE;
             predecessor[i] = -1;
             nodesLeft.add(i);
@@ -29,20 +31,20 @@ public class TaxedSelfishRoutingAgent implements NetworkAgent {
         cost[0] = 0;
 
         /* -- Cost calculation -- */
-        while(nodesLeft.size() > 0 ){
+        while (nodesLeft.size() > 0) {
             int u = nodesLeft.getFirst();
-            for (int uu:nodesLeft) { //find next node with lowest cost
-                if(cost[uu] < cost[u]){
+            for (int uu : nodesLeft) { //find next node with lowest cost
+                if (cost[uu] < cost[u]) {
                     u = uu;
                 }
             }
             nodesLeft.remove(nodesLeft.indexOf(u));
-            if(u == last){
+            if (u == last) {
                 nodesLeft.clear();
             }
-            for (int v:nodesLeft
+            for (int v : nodesLeft
             ) {
-                if(ec.contains(u, v)){
+                if (ec.contains(u, v)) {
                     updateCost(u, v, ec, decidedAgents);
                 }
             }
@@ -52,18 +54,18 @@ public class TaxedSelfishRoutingAgent implements NetworkAgent {
         /* -- Backtracking -- */
         int u = ncg.getNumVertices() - 1;
         ret.add(u);
-        while(predecessor[u] >= 0){
+        while (predecessor[u] >= 0) {
             u = predecessor[u];
             ret.addFirst(u);
         }
         return ret;
     }
 
-        //TODO implement correct way of calculating taxes
-        private void updateCost(int u, int v, EdgeCosts ec, int decidedAgents){
-        //double costs = cost[u] + ec.getEdgeCost(u, v) + ec.getEdgeCost(u, v) - ec.getEdgeCostCustomAgents(u, v, decidedAgents);
-        double costs = cost[u] + ec.getEdgeCostCustomAgents(u, v, decidedAgents) + factor * decidedAgents * (ec.getEdgeCostCustomAgents(u, v, decidedAgents + 1) - ec.getEdgeCostCustomAgents(u, v, decidedAgents + 1));
-        if(costs < cost[v]){
+    //TODO @Antoine: I implementet how it is defined with the new derivative fct
+    private void updateCost(int u, int v, EdgeCosts ec, int decidedAgents) {
+        //double costs = cost[u] + ec.getEdgeCostCustomAgents(u, v, decidedAgents) + factor * decidedAgents * (ec.getEdgeCostCustomAgents(u, v, decidedAgents + 1) - ec.getEdgeCostCustomAgents(u, v, decidedAgents + 1));
+        double costs = cost[u] + ec.getEdgeCostCustomAgents(u, v, decidedAgents) + decidedAgents * ec.getDerivativeEdgeCost(u, v);
+        if (costs < cost[v]) {
             cost[v] = costs;
             predecessor[v] = u;
         }

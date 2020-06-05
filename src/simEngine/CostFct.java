@@ -9,4 +9,6 @@ public interface CostFct {
      */
     public Float getCost(int t);
 
+    public Float getDerivativeCost();
+
 }
