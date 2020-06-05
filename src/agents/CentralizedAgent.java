@@ -11,7 +11,9 @@ public class CentralizedAgent implements NetworkAgent {
     static HashMap<Integer, LinkedList<Integer>> solutions;
     static private int totAgents;
     static private EdgeCosts ec;
-    static private HashMap<Integer[], Double> distributionCost = new HashMap<>();
+    private HashMap<Integer[], Double> distributionCost = new HashMap<>(1000);
+    double minDistVal = Double.MAX_VALUE;
+    int[] minDistCombination;
     static private ArrayList<LinkedList<Integer>> uniquePaths;
     static private int nrUniquePaths;
 
@@ -47,16 +49,16 @@ public class CentralizedAgent implements NetworkAgent {
         // calculate all distribution costs
         recDistributionCost(0, new Integer[nrUniquePaths], totAgents);
 
-        // find minimal value of all distribution costs
+        /*// find minimal value of all distribution costs
         double min = Integer.MAX_VALUE;
         for (Map.Entry<Integer[], Double> current : distributionCost.entrySet()) {
             min = Math.min(min, current.getValue());
-        }
+        }*/
 
         // save all distributions that create a minimal value in list
         ArrayList<Integer[]> bestDistributions = new ArrayList<>();
         for (Map.Entry<Integer[], Double> current : distributionCost.entrySet()) {
-            if (current.getValue() == min) {
+            if (current.getValue() == minDistVal) {
                 bestDistributions.add(current.getKey());
             }
         }
@@ -79,18 +81,38 @@ public class CentralizedAgent implements NetworkAgent {
     }
 
     /**
-     * Recursive function to calculate all distributions over unique paths and save cost of each
+     * Recursive function to calculate all distributions of agents over unique paths and save cost of each
      * distribution-path-combination in DP table.
+     *
+     * @param current current path being assigned agents
+     * @param distribution distribution of agents per path
+     * @param leftToDistribute agents left to distribute
      */
     public void recDistributionCost(int current, Integer[] distribution, int leftToDistribute) {
+        // last path gets all remaining agents
+        // calculate how much distribution cost and add to set of all distribution costs
         if (current == nrUniquePaths-1) {
             distribution[current] = leftToDistribute;
-            distributionCost.put(distribution, calcDistributionCost(distribution));
+            double currentDistVal = calcDistributionCost(distribution);
+            // new minimal distribution found
+            if (currentDistVal < minDistVal) {
+                distributionCost.clear();
+                distributionCost.put(distribution, currentDistVal);
+                minDistVal = currentDistVal;
+                //minDistCombination = distribution;
+            }
+            // another minimal distribution found
+            if (currentDistVal == minDistVal) {
+                distributionCost.put(distribution, currentDistVal);
+            }
+            // else forget this distribution
             return;
         }
+        // assign range of all left agents to current path
         for (int i = 0; i < leftToDistribute; i++) {
             distribution[current] = i;
-            recDistributionCost(current+1, distribution, leftToDistribute-1);
+            // go to next path, there are i less agents to distribute
+            recDistributionCost(current+1, distribution, leftToDistribute-i);
         }
     }
 
@@ -121,8 +143,17 @@ public class CentralizedAgent implements NetworkAgent {
         return uniquePaths;
     }
 
-    // Prints all paths from
-    // 's' to 'd'
+    /*
+    Thanks to https://www.geeksforgeeks.org/find-paths-given-source-destination/, Himanshu Shekhar
+    for printAllPaths and printAllPathsUtil
+     */
+
+    /**
+     * Finds all paths from s to d
+     *
+     * @param s source node
+     * @param d destination node
+     */
     public void printAllPaths(int s, int d)
     {
         boolean[] isVisited = new boolean[numVertices];
@@ -141,16 +172,23 @@ public class CentralizedAgent implements NetworkAgent {
     // vertices in current path.
     // localPathList<> stores actual
     // vertices in the current path
-    private void printAllPathsUtil(Integer u, Integer d,
-                                   boolean[] isVisited,
-                                   List<Integer> localPathList) {
+
+    /**
+     * A recursive function to print all paths from 'u' to 'd'.
+     *
+     * @param u current node to find path from to d
+     * @param d destination node
+     * @param isVisited keeps track of visited nodes
+     * @param localPathList current found path
+     */
+    private void printAllPathsUtil(Integer u, Integer d, boolean[] isVisited, List<Integer> localPathList) {
 
         // Mark the current node
         isVisited[u] = true;
 
         if (u.equals(d))
         {
-            System.out.println(localPathList);
+            //System.out.println(localPathList);
             LinkedList<Integer> temp = new LinkedList<Integer>(localPathList);
             uniquePaths.add(temp);
             // if match found then no need to traverse more till depth
@@ -158,8 +196,7 @@ public class CentralizedAgent implements NetworkAgent {
             return ;
         }
 
-        // Recur for all the vertices
-        // adjacent to current vertex
+        // Recur for all the vertices adjacent to current vertex
         for (Integer i : adjList[u])
         {
             if (!isVisited[i])
@@ -177,18 +214,6 @@ public class CentralizedAgent implements NetworkAgent {
 
         // Mark the current node
         isVisited[u] = false;
-    }
-
-
-    private void prependNodeToPath (int current, int next) {
-        Iterator<LinkedList<Integer>> it = pathsToDest.get(next).listIterator();
-        LinkedList<Integer> list = new LinkedList<>();
-        while (it.hasNext()) {
-            list.clear();
-            list.add(current);
-            list.addAll(it.next()); // now current is prepended to a path from next to dest
-            pathsToDest.get(current).add(list);
-        }
     }
 
     /**
