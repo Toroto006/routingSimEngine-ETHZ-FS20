@@ -5,14 +5,16 @@ import simEngine.NetworkCostGraph;
 
 import java.util.LinkedList;
 
-public class TaxedSelfishRoutingAgent implements NetworkAgent {
+public class TaxedClassSelfishRoutingAgent implements NetworkAgent {
 
     private double cost[];
     private int predecessor[];
+    private double factor;
 
     @Override
     public LinkedList<Integer> agentDecide(NetworkCostGraph ncg, EdgeCosts ec, int decidedAgents, int totalAgents) {
 
+        factor = 4.0 / totalAgents * decidedAgents;
         LinkedList<Integer> ret = new LinkedList<>();
         int last = ncg.getNumVertices() - 1;
 
@@ -60,7 +62,7 @@ public class TaxedSelfishRoutingAgent implements NetworkAgent {
     }
 
     private void updateCost(int u, int v, EdgeCosts ec) {
-        double costs = cost[u] + ec.getEdgeCostCustomAgents(u, v, ec.getAgentsOnEdge(u, v) + 1) + ec.getAgentsOnEdge(u, v) * ec.getDerivativeEdgeCost(u, v);
+        double costs = cost[u] + ec.getEdgeCostCustomAgents(u, v, ec.getAgentsOnEdge(u, v) + 1) + ec.getAgentsOnEdge(u, v) * ec.getDerivativeEdgeCost(u, v) * factor;
         if (costs < cost[v]) {
             cost[v] = costs;
             predecessor[v] = u;
