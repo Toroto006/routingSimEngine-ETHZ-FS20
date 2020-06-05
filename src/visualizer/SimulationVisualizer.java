@@ -36,7 +36,6 @@ public class SimulationVisualizer {
     private static Graph createGraphFromJson(JSONObject simulation) {
         Graph graph = new MultiGraph(simulation.getString("networkTitle"));
         //TODO do for all/told agents
-        simulation = simulation.getJSONObject("SelfishRoutingAgent");
         System.out.println(simulation.keySet());
         List<Object> nodes = simulation.getJSONArray("nodes").toList();
         for (Object e: nodes) {
