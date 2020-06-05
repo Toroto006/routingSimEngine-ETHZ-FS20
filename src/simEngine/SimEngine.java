@@ -187,7 +187,7 @@ public class SimEngine {
 
         NetworkCostGraph networkCostGraph = new NetworkCostGraph(simConfig.getNetworkGraph());
         networkCostGraph.calculateAllCosts();
-        System.out.println("Start costMatrix:\n" + networkCostGraph.toString());
+        //System.out.println("Start costMatrix:\n" + networkCostGraph.toString());
         for (int doneAgents = 0; doneAgents < simConfig.getAmountOfAgents(); doneAgents++) {
 
             // Run one agent
@@ -244,11 +244,11 @@ public class SimEngine {
 
     public static void main(String[] args) throws Exception {
         String SimulationName = "Simulation";
-        //String[] networks = {"BraessParadoxFast1", "BraessParadoxSlow1"};
-        String[] networks = {"BraessParadoxFast1"};
+        String[] networks = {"BraessParadoxFast1", "BraessParadoxSlow1"};
+        //String[] networks = {"BraessParadoxFast1"};
         //String[] networks = {"TestNetwork1", "TestNetwork2", "TestNetwork3"};
         //TODO set the correct agents here!
-        NetworkAgent[] agents = {new SelfishRoutingAgent(), new TaxedSelfishRoutingAgent(), new CentralizedAgent()};
+        NetworkAgent[] agents = {new SelfishRoutingAgent(), new TaxedSelfishRoutingAgent()};
 
         System.out.println("GameTheory simEngine.simEngine started!\n");
         

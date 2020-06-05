@@ -39,7 +39,7 @@ public class EdgeCosts {
      * @return cost calculated
      */
     public Float getEdgeCost(int i, int j) {
-        return edges.get(createKey(i, j)).getCost(0);
+        return edges.get(createKey(i, j)).getCost();
     }
 
     public Float getDerivativeEdgeCost(int i, int j) {
@@ -56,7 +56,7 @@ public class EdgeCosts {
 
     public void copy(EdgeCosts edgeCosts) {
         for (Map.Entry<String, Edge> entry : edgeCosts.edges.entrySet()) {
-            edges.put(entry.getKey(), entry.getValue().copy());
+            this.edges.put(entry.getKey(), entry.getValue().copy());
         }
     }
 
