@@ -120,11 +120,51 @@ public class CentralizedAgent implements NetworkAgent {
         stack.push(source);
 
         while(!stack.isEmpty()) {
-            int current = stack.pop();
+            int current = stack.peek();
 
+            // add node to path if never been seen before in DFS and current path
             if (!visitedDFS[current] && !visitedPath[current]) {
                 currentPath.add(current);
+                visitedDFS[current] = true;
+                visitedPath[current] = true;
+                //stack.pop(); //might double pop if current == dest, actually no popping yet
             }
+            // found complete, new path from source to destination
+            if (current == dest) {
+                uniquePaths.add(currentPath);
+                currentPath.clear();
+                // backtrack to last node with unvisited neighbours -> done by stack, still need to unmark nodes up until then in visitedPath
+                int u = stack.peek();
+                while (visitedDFS[u]) {
+                    stack.pop();
+                    visitedPath[u] = false;
+                }
+                // make sure dest can be reached again
+                visitedDFS[dest] = false;
+                // use u as new current node
+                current = u;
+            }
+            // found node that was already in path
+            if (visitedPath[current] == true) {
+                current = stack.pop();
+                currentPath.removeLast();
+                visitedPath[current] = false;
+                while(visitedPath[current]) {
+                    stack.pop();
+                    // not updating visitedDFS because if it's true it has been technically processed by DFS
+                    visitedPath[current] = false;
+                    currentPath.removeLast();
+                    current = stack.peek();
+                }
+                // have found node that not has been in path, might have been in DFS
+                if (visitedDFS[current]) {
+
+                }
+            }
+            if (visitedDFS[current]) {
+
+            }
+
 
             Iterator it = adjList[current].listIterator();
 
