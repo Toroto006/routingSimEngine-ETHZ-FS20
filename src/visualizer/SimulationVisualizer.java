@@ -66,6 +66,7 @@ public class SimulationVisualizer {
         graph.getNode((String) nodes.get(nodes.size()-1)).setAttribute("xy", 1, 0);
         graph.getNode((String) nodes.get(0)).addAttribute("ui.label", "Start");
         graph.getNode((String) nodes.get(nodes.size()-1)).addAttribute("ui.label", "End");
+        graph.getNode((String) nodes.get(nodes.size()-1)).addAttribute("layout.label", "End");
         return graph;
     }
 
@@ -158,8 +159,16 @@ public class SimulationVisualizer {
             "	fill-color: red, yellow, green, gray;"+
             "	fill-mode: dyn-plain;"+
             "}"+
+            "node.start {"+
+            "	size: 12px;"+
+            "	fill-color: green;"+
+            "}"+
+            "node.end {"+
+            "	size: 12px;"+
+            "	fill-color: blue;"+
+            "}"+
             "node {"+
-            "	size: 6px;"+
+            "	size: 7px;"+
             "	fill-color: #444;"+
             "}";
 }

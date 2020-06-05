@@ -41,11 +41,15 @@ public class Edge {
         return costFct;
     }
 
-    public Float getCost(int t) {
+    public Float getCostAgents(int t) {
         return costFct.getCost(t);
     }
 
     public Float getDerivativeCost() {
         return costFct.getDerivativeCost();
+    }
+
+    public Edge copy() {
+        return new Edge(costFct, direction);
     }
 }

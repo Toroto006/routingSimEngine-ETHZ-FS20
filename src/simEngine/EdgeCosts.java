@@ -39,7 +39,7 @@ public class EdgeCosts {
      * @return cost calculated
      */
     public Float getEdgeCost(int i, int j) {
-        return edges.get(createKey(i, j)).getCost(0);
+        return edges.get(createKey(i, j)).getCost();
     }
 
     public Float getDerivativeEdgeCost(int i, int j) {
@@ -47,7 +47,7 @@ public class EdgeCosts {
     }
 
     public Float getEdgeCostCustomAgents(int i, int j, int t) {
-        return edges.get(createKey(i, j)).getCost(t);
+        return edges.get(createKey(i, j)).getCostAgents(t);
     }
 
     public boolean contains(int i, int j) {
@@ -55,7 +55,9 @@ public class EdgeCosts {
     }
 
     public void copy(EdgeCosts edgeCosts) {
-        this.edges.putAll(edgeCosts.edges);
+        for (Map.Entry<String, Edge> entry : edgeCosts.edges.entrySet()) {
+            this.edges.put(entry.getKey(), entry.getValue().copy());
+        }
     }
 
     public void addAgent(int i, int j) {
