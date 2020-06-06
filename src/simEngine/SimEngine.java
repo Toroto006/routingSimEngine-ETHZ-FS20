@@ -240,8 +240,9 @@ public class SimEngine {
 
     public static void main(String[] args) throws Exception {
         String SimulationName = "Simulation";
-        String[] networks = {"BraessParadoxFast1", "BraessParadoxSlow1"};
+        //String[] networks = {"BraessParadoxFast1", "BraessParadoxSlow1"};
         //String[] networks = {"BraessParadoxSlow1"};
+        String[] networks = {"Pigou"};
         //String[] networks = {"TestNetwork1", "TestNetwork2", "TestNetwork3"};
         //TODO set the correct agents here!
         NetworkAgent[] agents = {
