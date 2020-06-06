@@ -103,13 +103,21 @@ public class CentralizedAgent implements NetworkAgent {
             // new minimal distribution found
             if (currentDistVal < minDistVal) {
                 distributionCost.clear();
-                distributionCost.put(distribution, currentDistVal);
+                Integer[] copy = new Integer[nrUniquePaths];
+                for (int i = 0; i < nrUniquePaths; i++) {
+                    copy[i] = distribution[i];
+                }
+                distributionCost.put(copy, currentDistVal);
                 minDistVal = currentDistVal;
                 //minDistCombination = distribution;
             }
             // another minimal distribution found
             if (currentDistVal == minDistVal) {
-                distributionCost.put(distribution, currentDistVal);
+                Integer[] copy = new Integer[nrUniquePaths];
+                for (int i = 0; i < nrUniquePaths; i++) {
+                    copy[i] = distribution[i];
+                }
+                distributionCost.put(copy, currentDistVal);
             }
             // else forget this distribution
             return;
@@ -228,7 +236,7 @@ public class CentralizedAgent implements NetworkAgent {
      * @param path path as a list of nodes
      * @return Cost as a real value.
      */
-    public double calcPathCost(LinkedList<Integer> path) {
+    public double calcPathCost(LinkedList<Integer> path, Integer[] distribution) {
         double pathCost = 0;
         // empty path or only 1 node
         if (path.isEmpty() || path.size() < 2) {
@@ -239,14 +247,32 @@ public class CentralizedAgent implements NetworkAgent {
 
         Iterator<Integer> it = path.listIterator();
 
-        int current = it.next();
+        int current = -1;
         int next = it.next();
         while (it.hasNext()) {
-            pathCost += ec.getEdgeCost(current, next);
             current = next;
             next = it.next();
+            int nrAgentsOnEdge = 0;
+            // check for all unique paths if they have agents on edge defined by current-next
+            for(int i = 0; i < uniquePaths.size(); i++) {
+                Iterator<Integer> it2 = uniquePaths.get(i).listIterator();
+                if (path.isEmpty() || path.size() < 2) {
+                    break;
+                }
+                int node1 = -1;
+                int node2 = it2.next();
+                while (it2.hasNext()) {
+                    node1 = node2;
+                    node2 = it2.next();
+                    if (node1 == current && node2 == next) {
+                        nrAgentsOnEdge += distribution[i];
+                        break;
+                    }
+                }
+            }
+            // calculate path cost for current edge
+            pathCost += ec.getEdgeCostCustomAgents(current, next, nrAgentsOnEdge);
         }
-        pathCost += ec.getEdgeCost(current, next);
         return pathCost;
     }
 
@@ -259,8 +285,8 @@ public class CentralizedAgent implements NetworkAgent {
     public Double calcDistributionCost(Integer[] distribution) {
         double distributionSum = 0;
         for (int i = 0; i < uniquePaths.size(); i++) {
-            distributionSum += distribution[i] * calcPathCost(uniquePaths.get(i));
+            distributionSum += distribution[i] * calcPathCost(uniquePaths.get(i), distribution);
         }
-        return (1.0/totAgents*distributionSum);
+        return (distributionSum/totAgents);
     }
 }
