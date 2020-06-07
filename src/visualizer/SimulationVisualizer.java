@@ -5,19 +5,26 @@ import org.graphstream.algorithm.generator.Generator;
 import org.graphstream.algorithm.randomWalk.RandomWalk;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
+import org.graphstream.ui.spriteManager.Sprite;
+import org.graphstream.ui.spriteManager.SpriteManager;
+import org.graphstream.ui.view.Viewer;
+import org.graphstream.ui.view.ViewerPipe;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.graphstream.algorithm.Toolkit.randomNode;
+import static org.graphstream.ui.graphicGraph.GraphPosLengthUtils.nodePosition;
 import static utils.UtilFuntions.readFileAsJSON;
 
 public class SimulationVisualizer {
 
     private static ArrayList<JSONObject> getSimulationsFromJson(String simulation) {
-        String filePath = "./networks/" + simulation + ".json";
+        String filePath = "./networks/finishedRuns/" + simulation + ".json";
         JSONObject simJson = null;
         try {
             simJson = readFileAsJSON(filePath);
@@ -51,9 +58,16 @@ public class SimulationVisualizer {
                 System.out.println("The read simultaion json has the wrong format!");
                 System.exit(-2);
             }
-            JSONArray conn = ((JSONObject) e).getJSONArray("connection");
+            JSONObject edge = (JSONObject) e;
+            JSONArray conn = edge.getJSONArray("connection");
             String edgeID = conn.getString(0)+conn.getString(1);
-            graph.addEdge(edgeID, conn.getString(0), conn.getString(1));
+            graph.addEdge(edgeID, conn.getString(0), conn.getString(1), true);
+            JSONObject use = edge.getJSONObject("usage");
+            graph.getEdge(edgeID).addAttribute("use", use);
+
+            //for(JSONObject net: use)
+
+
         }
         graph.addAttribute("ui.stylesheet", styleSheet);
         graph.addAttribute("ui.quality");
@@ -66,6 +80,7 @@ public class SimulationVisualizer {
         graph.getNode((String) nodes.get(0)).addAttribute("ui.label", "Start");
         graph.getNode((String) nodes.get(nodes.size()-1)).addAttribute("ui.label", "End");
         graph.getNode((String) nodes.get(nodes.size()-1)).addAttribute("layout.label", "End");
+
         return graph;
     }
 
@@ -77,8 +92,51 @@ public class SimulationVisualizer {
         ArrayList<JSONObject> sims = getSimulationsFromJson("Simulation_out");
         for (JSONObject sim: sims) {
             Graph g = createGraphFromJson(sim);
-            g.display();
+            Viewer v = g.display(true);
+
+
+            testDrawing(g);
+
         }
+    }
+
+    private static void testDrawing(Graph g) {
+        g.addAttribute("ui.agent", "agent { \tshape: box; \tsize: 100px, 100px; \tfill-mode: plain; \tfill-color: red;}");
+
+        ViewerPipe pipe = v.newViewerPipe();
+        pipe.addAttributeSink(g);
+
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+
+        pipe.pump();
+        SpriteManager sman = new SpriteManager(g);
+        Sprite s1 = sman.addSprite("S1");
+        Sprite s2 = sman.addSprite("S2");
+        s1.addAttribute("ui.agent", "agent");
+        s2.addAttribute("ui.agent", "agent");
+        Node n1 = randomNode(g);
+        Node n2 = randomNode(g);
+        System.out.println(n1.getId() + " and " + n2.getId());
+
+        for(int i = 0; i < 2000; i++) {
+            pipe.pump();
+            double p1[] = nodePosition(n1);
+            double p2[] = nodePosition(n2);
+            s1.setPosition(p1[0], p1[1], p1[2]);
+            s2.setPosition(p2[0], p2[1], p2[2]);
+            try {
+                Thread.sleep(15);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println("done");
     }
 
     public void TestRandomWalk() {

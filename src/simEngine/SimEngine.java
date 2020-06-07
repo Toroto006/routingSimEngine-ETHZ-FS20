@@ -24,7 +24,7 @@ public class SimEngine {
         // json in java https://www.tutorialspoint.com/json/json_java_example.htm
         // we give the nodes numbers in lexicographic order for internal purpose
         // e.g. a graph with A B C as nodes will internally be a adj. matrix of size 3, where 0 is A
-        String filePath = "./networks/" + simulation + ".json";
+        String filePath = "./networks/inputGraphs/" + simulation + ".json";
         JSONObject jsonObject = readFileAsJSON(filePath);
         // From now do convertion to config
         String[] nodes = jsonObject.getJSONArray("nodes").toList().toArray(new String[0]);
