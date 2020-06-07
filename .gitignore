@@ -25,6 +25,7 @@ hs_err_pid*
 out
 /routingSimEngine.iml
 /networks/finishedRuns/*
+/networks/Simulation_out.json
 .gradle/*
 gradle/*
 

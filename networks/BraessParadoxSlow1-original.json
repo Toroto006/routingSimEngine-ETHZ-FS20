@@ -1,6 +1,6 @@
 {
   "_comment": "The t in this network configuration is the total amount of agents on this edge at a given time.",
-  "networkTitle": "Brass's paradox n = 1 with center, as described in paper",
+  "networkTitle": "Brass's paradox n = 1 with center",
   "amountOfAgents": 4000,
   "agentsPerStep": 2000,
   "nodes": [
@@ -15,28 +15,28 @@
         "a",
         "b"
       ],
-      "cost": "0.01t+0"
+      "cost": "0.00025t+0"
     },
     {
       "connection": [
         "c",
         "d"
       ],
-      "cost": "0.01t+0"
+      "cost": "0.00025t+0"
     },
     {
       "connection": [
         "a",
         "c"
       ],
-      "cost": "0t+45"
+      "cost": "0t+1"
     },
     {
       "connection": [
         "b",
         "d"
       ],
-      "cost": "0t+45"
+      "cost": "0t+1"
     },
     {
       "connection": [
