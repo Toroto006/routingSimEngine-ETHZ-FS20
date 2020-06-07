@@ -95,12 +95,12 @@ public class SimulationVisualizer {
             Viewer v = g.display(true);
 
 
-            testDrawing(g);
+            testDrawing(v, g);
 
         }
     }
 
-    private static void testDrawing(Graph g) {
+    private static void testDrawing(Viewer v, Graph g) {
         g.addAttribute("ui.agent", "agent { \tshape: box; \tsize: 100px, 100px; \tfill-mode: plain; \tfill-color: red;}");
 
         ViewerPipe pipe = v.newViewerPipe();
