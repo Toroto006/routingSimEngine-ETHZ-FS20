@@ -206,35 +206,24 @@ public class SimEngine {
         return networkCostGraph;
     }
 
-    private static void runSimulationForAgent(NetworkAgent networkAgent, SimConfig simConfig, JSONObject export)
-            throws Exception {
+    private static void runSimulationForAgent(NetworkAgent networkAgent, SimConfig simConfig, JSONObject export) {
         String agentName = networkAgent.getClass().getSimpleName();
         System.out.println("Starting the simulation of " + agentName + "!");
-
         runSimulation(simConfig, networkAgent, export);
-        // TODO actually somehow return simulation result to export
-        // try {
-        // exportSimulation(simConfig, ncgDone, agentName, out);
-        // } catch (Exception e) {
-        // e.printStackTrace();
-        // }
         System.out.println("Finished the simulation of " + agentName + "!");
-
     }
 
     public static void main(String[] args) throws Exception {
         String SimulationName = "Simulation";
-        String[] networks = {"BraessParadoxFast1", "BraessParadoxSlow1-original", "Pigou"};
+        //String[] networks = {"BraessParadoxFast1", "BraessParadoxSlow1", "Pigou", "BraessParadoxFast2", "BraessParadoxSlow2"};
         //String[] networks = {"BraessParadoxSlow1-original"};
-        //String[] networks = {"BraessParadoxSlow1"};
-        //String[] networks = {"Pigou"};
-        //String[] networks = {"TestNetwork1", "TestNetwork2", "TestNetwork3"};
-        //TODO set the correct agents here!
+        String[] networks = {"BraessParadoxFast1", "BraessParadoxSlow1-original", "Pigou"};
         NetworkAgent[] agents = {
                 new SelfishRoutingAgent(),
                 new TaxedSelfishRoutingAgent(),
                 new TaxedSelfishRoutingAgent(new LinearFct(2f, 1f), "TaxedClassSelfishRoutingAgent"),
-                new CentralizedAgent()};
+                new CentralizedAgent()
+        };
         System.out.println("GameTheory simEngine.simEngine started!\n");
 
         JSONObject finalExport = new JSONObject();

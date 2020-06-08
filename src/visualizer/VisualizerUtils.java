@@ -52,7 +52,6 @@ public class VisualizerUtils {
 
     protected static Graph createGraphFromJson(JSONObject simulation) {
         Graph graph = new MultiGraph(simulation.getString("networkTitle"));
-        //TODO do for all/told agents
         System.out.println(simulation.keySet());
         List<Object> nodes = simulation.getJSONArray("nodes").toList();
         for (Object e: nodes) {
@@ -71,8 +70,7 @@ public class VisualizerUtils {
                 System.exit(-2);
             }
             JSONObject edge = (JSONObject) e;
-            //System.out.println(edge.keySet());
-
+            //Work with edge and create the graph to display
             JSONArray conn = edge.getJSONArray("connection");
             String edgeID = conn.getString(0)+conn.getString(1);
             graph.addEdge(edgeID, conn.getString(0), conn.getString(1), true);
