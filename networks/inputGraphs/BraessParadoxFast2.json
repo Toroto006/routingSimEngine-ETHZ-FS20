@@ -1,0 +1,65 @@
+{
+  "_comment": "The t in this network configuration is the total amount of agents on this edge at a given time.",
+  "networkTitle": "Brass's paradox n = 2 without center",
+  "amountOfAgents": 2000,
+  "agentsPerStep": 100,
+  "nodes": [
+    "a",
+    "w2",
+    "v2",
+    "w1",
+    "v1",
+    "z"
+  ],
+  "edges": [
+    {
+      "connection": [
+        "a",
+        "w2"
+      ],
+      "cost": "0t+1"
+    },
+    {
+      "connection": [
+        "a",
+        "v2"
+      ],
+      "cost": "0.01t+0"
+    },
+    {
+      "connection": [
+        "w2",
+        "z"
+      ],
+      "cost": "0.01t+0"
+    },
+    {
+      "connection": [
+        "v2",
+        "w1"
+      ],
+      "cost": "0t+1"
+    },
+    {
+      "connection": [
+        "w1",
+        "z"
+      ],
+      "cost": "0.01t+0"
+    },
+    {
+      "connection": [
+        "a",
+        "v1"
+      ],
+      "cost": "0.01t+0"
+    },
+    {
+      "connection": [
+        "v1",
+        "z"
+      ],
+      "cost": "0.01t+0"
+    }
+  ]
+}
