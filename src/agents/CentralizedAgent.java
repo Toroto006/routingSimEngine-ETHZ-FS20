@@ -7,19 +7,14 @@ import java.util.*;
 
 public class CentralizedAgent implements NetworkAgent {
     static HashMap<Integer, LinkedList<Integer>> solutions;
-    static private int totAgents;
-    static private EdgeCosts ec;
-    private HashMap<Integer[], Double> distributionCost = new HashMap<>(1000);
+    static int totAgents;
+    static EdgeCosts ec;
+    HashMap<Integer[], Double> distributionCost = new HashMap<>(1000);
     double minDistVal = Double.MAX_VALUE;
     int[] minDistCombination;
-    static private ArrayList<LinkedList<Integer>> uniquePaths;
-    static private int nrUniquePaths;
-    static private String name = "CentralizedAgent";
-
-    @Override
-    public String getName() {
-        return this.name;
-    }
+    static ArrayList<LinkedList<Integer>> uniquePaths;
+    static int nrUniquePaths;
+    static String name = "CentralizedAgent";
 
     LinkedList<Integer>[] adjList;
     boolean[] visitedDFS;
@@ -27,6 +22,11 @@ public class CentralizedAgent implements NetworkAgent {
     // list of paths (LinkedList) for each node
     ArrayList<ArrayList<LinkedList<Integer>>> pathsToDest;
     int numVertices;
+
+    @Override
+    public String getName() {
+        return this.name;
+    }
 
     @Override
     public LinkedList<Integer> agentDecide(NetworkCostGraph ncg, EdgeCosts ec1, int decidedAgents, int totalAgents) {
@@ -51,6 +51,8 @@ public class CentralizedAgent implements NetworkAgent {
         nrUniquePaths = uniquePaths.size();
 
         // calculate all distribution costs
+        distributionCost = new HashMap<Integer[], Double>();
+        minDistVal = Float.MAX_VALUE;
         recDistributionCost(0, new Integer[nrUniquePaths], totAgents);
 
         /*// find minimal value of all distribution costs
