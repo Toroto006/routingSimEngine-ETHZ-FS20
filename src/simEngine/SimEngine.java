@@ -240,7 +240,7 @@ public class SimEngine {
 
     public static void main(String[] args) throws Exception {
         String SimulationName = "Simulation";
-        String[] networks = {"BraessParadoxFast1", "BraessParadoxSlow1"};
+        String[] networks = {"BraessParadoxFast1", "BraessParadoxSlow1-original"};
         //String[] networks = {"BraessParadoxSlow1-original"};
         //String[] networks = {"BraessParadoxSlow1"};
         //String[] networks = {"Pigou"};
