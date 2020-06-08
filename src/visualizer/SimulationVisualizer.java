@@ -37,7 +37,12 @@ public class SimulationVisualizer {
             List<String> agents = new LinkedList<>(((JSONObject) g.getEdge(0).getAttribute("usage")).keySet());
             graphs.add(new runAnimations(g, sim.getInt("amountOfAgents"), agents, currentAgent, 5000));
             //Make everything around the graph and it's animation
-            JPanel graphPanel = new JPanel(new GridLayout());
+            JPanel graphPanel = new JPanel(new GridLayout()){
+                @Override
+                public Dimension getPreferredSize() {
+                    return new Dimension(640, 480);
+                }
+            };
             Viewer viewer = new Viewer(g, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
             viewer.enableAutoLayout();
             ViewPanel viewPanel = viewer.addDefaultView(false);
