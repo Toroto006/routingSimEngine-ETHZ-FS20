@@ -15,6 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static org.graphstream.algorithm.Toolkit.randomNode;
@@ -60,7 +61,7 @@ public class SimulationVisualizer {
                 System.exit(-2);
             }
             JSONObject edge = (JSONObject) e;
-            System.out.println(edge.keySet());
+            //System.out.println(edge.keySet());
 
             JSONArray conn = edge.getJSONArray("connection");
             String edgeID = conn.getString(0)+conn.getString(1);
@@ -72,7 +73,7 @@ public class SimulationVisualizer {
                 graph.addAttribute("usageAmount", use.getJSONArray(use.keySet().iterator().next()).toList().size());
                 usageAmountSet = true;
             }
-            System.out.println(use.keySet());
+            //System.out.println(use.keySet());
         }
         graph.addAttribute("ui.stylesheet", styleSheet);
         graph.addAttribute("ui.quality");
@@ -92,16 +93,22 @@ public class SimulationVisualizer {
         System.out.println("Starting SimulationVisualizer!");
         ArrayList<JSONObject> sims = getSimulationsFromJson("Simulation_out");
         System.out.println("Read simulations from json successfully!");
+        ArrayList<runAnimations> graphs = new ArrayList<>();
         for (JSONObject sim: sims) {
             Graph g = createGraphFromJson(sim);
-            g.display();
+            List<String> agents = new LinkedList<>(((JSONObject) g.getEdge(0).getAttribute("usage")).keySet());
+            graphs.add(new runAnimations(g, sim.getInt("amountOfAgents"), agents, 5000));
+            //Viewer v = g.display(true);
+            //testDrawing(v, g);
+        }
+        for (Thread g: graphs)
+            g.start();
+        for (Thread g: graphs) {
             try {
-                updateAnimationAgent(g, sim.getInt("amountOfAgents"), "SelfishRoutingAgent");
+                g.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            //Viewer v = g.display(true);
-            //testDrawing(v, g);
         }
     }
 
@@ -140,21 +147,6 @@ public class SimulationVisualizer {
             }
         }
         System.out.println("done");
-    }
-
-    /**
-     * Update the edges with colors corresponding to entities passes.
-     */
-    public static void updateAnimationAgent(Graph graph, int amountOfAgents, String agentName) throws InterruptedException {
-        int usageAmount = (Integer) graph.getAttribute("usageAmount");
-        for (int i = 0; i < usageAmount; i++) {
-            for(Edge edge:graph.getEachEdge()) {
-                List<Object> usage = ((JSONObject) edge.getAttribute("usage")).getJSONArray(agentName).toList();
-                double color  = ((Integer)usage.get(i))*1.0/amountOfAgents;
-                edge.setAttribute("ui.color", color);
-            }
-            Thread.sleep(5000/usageAmount);
-        }
     }
 
     protected static String styleSheet =
