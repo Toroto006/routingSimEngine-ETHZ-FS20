@@ -31,10 +31,12 @@ public class runAnimations extends Thread {
         g.display();
         try {
             Thread.sleep(500);
-            for (String agent: agents) {
-                for (int i = 0; i < usageAmount; i++) {
-                    updateAnimationAgent(g, agent, i);
-                    Thread.sleep(totalAnimationTime/usageAmount);
+            while (true) {
+                for (String agent: agents) {
+                    for (int i = 0; i < usageAmount; i++) {
+                        updateAnimationAgent(g, agent, i);
+                        Thread.sleep(totalAnimationTime/usageAmount);
+                    }
                 }
             }
         } catch (InterruptedException e) {
