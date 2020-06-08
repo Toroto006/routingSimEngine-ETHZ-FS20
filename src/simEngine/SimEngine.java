@@ -1,15 +1,14 @@
 package simEngine;
 
-import agents.CentralizedAgent;
 import agents.NetworkAgent;
 import agents.SelfishRoutingAgent;
 import agents.TaxedSelfishRoutingAgent;
-import org.json.*;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.FileWriter;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static utils.UtilsFuntions.parseLinearFct;
 import static utils.UtilsFuntions.readFileAsJSON;
@@ -217,14 +216,14 @@ public class SimEngine {
 
     public static void main(String[] args) throws Exception {
         String SimulationName = "Simulation";
-        //String[] networks = {"BraessParadoxFast1", "BraessParadoxSlow1", "Pigou", "BraessParadoxFast2", "BraessParadoxSlow2"};
+        String[] networks = {"BraessParadoxFast1", "BraessParadoxSlow1", "Pigou", "BraessParadoxFast2", "BraessParadoxSlow2"};
         //String[] networks = {"BraessParadoxFast1", "BraessParadoxSlow1-original", "Pigou"};
-        String[] networks = {"Pigou", "BraessParadoxSlow1-original"};
+        //String[] networks = {"Pigou", "BraessParadoxSlow1-original"};
         NetworkAgent[] agents = {
                 new SelfishRoutingAgent(),
                 new TaxedSelfishRoutingAgent(),
                 new TaxedSelfishRoutingAgent(new LinearFct(2f, 1f), "TaxedClassSelfishRoutingAgent"),
-                new CentralizedAgent()
+                //new CentralizedAgent()
         };
         System.out.println("GameTheory simEngine.simEngine started!\n");
 

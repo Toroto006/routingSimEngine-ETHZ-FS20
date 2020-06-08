@@ -1,9 +1,7 @@
 package agents;
 
-import simEngine.Edge;
 import simEngine.EdgeCosts;
 import simEngine.NetworkCostGraph;
-import simEngine.SimConfig;
 
 import java.util.*;
 
