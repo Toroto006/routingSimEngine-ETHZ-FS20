@@ -33,7 +33,8 @@ public class SimulationVisualizer {
         for (JSONObject sim: sims) {
             //Create animation in viewer
             Graph g = createGraphFromJson(sim);
-            JLabel currentAgent = new JLabel("");
+            JLabel currentAgent = new JLabel("Still starting!");
+            JLabel totalCost = new JLabel("The total cost of the graph is: TODO");
             List<String> agents = new LinkedList<>(((JSONObject) g.getEdge(0).getAttribute("usage")).keySet());
             graphs.add(new runAnimations(g, sim.getInt("amountOfAgents"), agents, currentAgent, 5000));
             //Make everything around the graph and it's animation
@@ -47,11 +48,17 @@ public class SimulationVisualizer {
             viewer.enableAutoLayout();
             ViewPanel viewPanel = viewer.addDefaultView(false);
             graphPanel.add(viewPanel);
-            currentAgent.setBounds(6, 6, 400, 40);
-            //simFrame.add(currentAgent);
+            //Create legend panel
+            JPanel legend = new JPanel(new GridLayout(0, 1));
+            currentAgent.setBounds(6, 6, 400, 60);
+            legend.add(currentAgent);
+            legend.add(totalCost);
+            //Combining everything
             JFrame simFrame = new JFrame();
+            simFrame.setLayout(new BorderLayout());
+            simFrame.add(legend, BorderLayout.NORTH);
+            simFrame.add(graphPanel, BorderLayout.CENTER);
             simFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            simFrame.add(graphPanel);
             simFrame.setTitle(sim.getString("networkTitle"));
             simFrame.pack();
             simFrame.setLocationRelativeTo(null);

@@ -35,11 +35,13 @@ public class runAnimations extends Thread {
             Thread.sleep(500);
             while (true) {
                 for (String agent: agents) {
-                    currentAgent.setText(agent);
+                    currentAgent.setText("Current agent running: " + agent);
                     for (int i = 0; i < usageAmount; i++) {
                         updateAnimationAgent(g, agent, i);
                         Thread.sleep(totalAnimationTime/usageAmount);
                     }
+                    //Let the final setup up for a bitd
+                    Thread.sleep(500);
                 }
             }
         } catch (InterruptedException e) {
