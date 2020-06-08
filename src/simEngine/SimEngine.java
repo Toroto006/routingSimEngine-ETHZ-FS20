@@ -163,7 +163,6 @@ public class SimEngine {
      * @return
      */
     private static NetworkCostGraph runSimulation(final SimConfig simConfig, NetworkAgent agent, JSONObject export) {
-
         int totalEntries = simConfig.getAmountOfAgents() / simConfig.getAgentsPerStep() + 1;
         int[][] outEdges = new int[simConfig.getNetworkGraph().getEdges().size()][totalEntries];
         int j = 1;
@@ -175,6 +174,9 @@ public class SimEngine {
             // Run one agent
             LinkedList<Integer> agentPath = agent.agentDecide(networkCostGraph, networkCostGraph.getEdgeCosts(),
                     doneAgents, simConfig.getAmountOfAgents());
+            if (agentPath == null) {
+                System.err.println(agent.getClass().getSimpleName() + " returned a null path!");
+            }
             for (int i = 0; i < agentPath.size() - 1; i++) {
                 // Add the cost of this agent to the network
                 networkCostGraph.addAgent(agentPath.get(i), agentPath.get(i + 1));
@@ -216,8 +218,8 @@ public class SimEngine {
     public static void main(String[] args) throws Exception {
         String SimulationName = "Simulation";
         //String[] networks = {"BraessParadoxFast1", "BraessParadoxSlow1", "Pigou", "BraessParadoxFast2", "BraessParadoxSlow2"};
-        //String[] networks = {"BraessParadoxSlow1-original"};
-        String[] networks = {"BraessParadoxFast1", "BraessParadoxSlow1-original", "Pigou"};
+        //String[] networks = {"BraessParadoxFast1", "BraessParadoxSlow1-original", "Pigou"};
+        String[] networks = {"Pigou", "BraessParadoxSlow1-original"};
         NetworkAgent[] agents = {
                 new SelfishRoutingAgent(),
                 new TaxedSelfishRoutingAgent(),
