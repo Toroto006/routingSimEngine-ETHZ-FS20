@@ -11,7 +11,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static utils.UtilFuntions.readFileAsJSON;
+import static utils.UtilsFuntions.parseLinearFct;
+import static utils.UtilsFuntions.readFileAsJSON;
 
 public class SimEngine {
 
@@ -32,29 +33,12 @@ public class SimEngine {
         HashMap<String, Integer> nodesMapped = createNodeMappingSI(nodes);
         NetworkGraph networkGraph = new NetworkGraph(vertices);
         // Now read the edges
-
-        Pattern pattern = Pattern.compile("(\\d*\\.?\\d*)\\*?t\\+(\\d*\\.?\\d*)", Pattern.MULTILINE);
-
         for (Object o : jsonObject.getJSONArray("edges")) {
             if (!(o instanceof JSONObject))
                 throw new Exception("Decoding the json was not successful, edges are wrong/not given!");
             JSONObject edge = (JSONObject) o;
-            //System.out.println(o.toString() + "\n");
-
-            CostFct c = null;
             String costFctStr = edge.getString("cost");
-            //System.out.println(edge.toString() + "\n");
-            Matcher m = pattern.matcher(costFctStr);
-            m.find();
-            try {
-                Float a = Float.valueOf(m.group(1));
-                Float b = Float.valueOf(m.group(2));
-                c = new LinearFct(a, b);
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new Exception("Something went wrong while decoding the linear function!");
-            }
-
+            CostFct c = parseLinearFct(costFctStr);
             JSONArray connections = edge.getJSONArray("connection");
             int i = nodesMapped.get(connections.get(0));
             int j = nodesMapped.get(connections.get(1));
@@ -274,7 +258,7 @@ public class SimEngine {
             for (NetworkAgent agent : agents)
                 runSimulationForAgent(agent, simConfig, currentNetwork);
 
-            System.out.println("Finished all simulations of " + simConfig.getNetTitle() + "'!\n");
+            System.out.println("Finished all simulations of '" + simConfig.getNetTitle() + "'!\n");
 
             finalExport.put(network, currentNetwork);
         }

@@ -28,4 +28,8 @@ public class LinearFct implements CostFct {
     public String toString() {
         return a + "*t+" + b;
     }
+
+    public String toString(int withAgents) {
+        return a + "*" + withAgents + "+" + b + " = " + this.getCost(withAgents);
+    }
 }

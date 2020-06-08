@@ -1,12 +1,32 @@
 package utils;
 
 import org.json.JSONObject;
+import simEngine.LinearFct;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class UtilFuntions {
+public class UtilsFuntions {
+
+    private static Pattern pattern = Pattern.compile("(\\d*\\.?\\d*)\\*?t\\+(\\d*\\.?\\d*)", Pattern.MULTILINE);
+
+    public static LinearFct parseLinearFct(String costFctStr) {
+        LinearFct c = null;
+        Matcher m = pattern.matcher(costFctStr);
+        m.find();
+        try {
+            Float a = Float.valueOf(m.group(1));
+            Float b = Float.valueOf(m.group(2));
+            c = new LinearFct(a, b);
+        } catch (Exception e) {
+            System.err.println("Something went wrong while decoding the linear function!");
+            e.printStackTrace();
+        }
+        return c;
+    }
 
     // Read file content into string with - Files.readAllBytes(Path path)
     // https://howtodoinjava.com/java/io/java-read-file-to-string-examples/

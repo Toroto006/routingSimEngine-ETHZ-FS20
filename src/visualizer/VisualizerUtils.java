@@ -4,14 +4,17 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.MultiGraph;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import simEngine.CostFct;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
-import static utils.UtilFuntions.readFileAsJSON;
+import static utils.UtilsFuntions.parseLinearFct;
+import static utils.UtilsFuntions.readFileAsJSON;
 
-public class visualizerUtils {
-    
+public class VisualizerUtils {
+
     protected static String styleSheet =
             "edge {"+
                     "	size: 3px;"+
@@ -80,7 +83,8 @@ public class visualizerUtils {
                 graph.addAttribute("usageAmount", use.getJSONArray(use.keySet().iterator().next()).toList().size());
                 usageAmountSet = true;
             }
-            //System.out.println(use.keySet());
+            CostFct c = parseLinearFct(edge.getString("cost"));
+            graph.getEdge(edgeID).addAttribute("costFct", c);
         }
         graph.addAttribute("ui.stylesheet", styleSheet);
         graph.addAttribute("ui.quality");

@@ -5,7 +5,6 @@ import org.graphstream.graph.Node;
 import org.graphstream.ui.spriteManager.Sprite;
 import org.graphstream.ui.spriteManager.SpriteManager;
 import org.graphstream.ui.swingViewer.ViewPanel;
-import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.Viewer;
 import org.graphstream.ui.view.ViewerPipe;
 import org.json.JSONObject;
@@ -15,12 +14,11 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
 
 import static org.graphstream.algorithm.Toolkit.randomNode;
 import static org.graphstream.ui.graphicGraph.GraphPosLengthUtils.nodePosition;
-import static visualizer.visualizerUtils.createGraphFromJson;
-import static visualizer.visualizerUtils.getSimulationsFromJson;
+import static visualizer.VisualizerUtils.createGraphFromJson;
+import static visualizer.VisualizerUtils.getSimulationsFromJson;
 
 public class SimulationVisualizer {
 
@@ -29,14 +27,14 @@ public class SimulationVisualizer {
         System.out.println("Starting SimulationVisualizer!");
         ArrayList<JSONObject> sims = getSimulationsFromJson("Simulation_out");
         System.out.println("Read simulations from json successfully!");
-        ArrayList<runAnimations> graphs = new ArrayList<>();
+        ArrayList<RunAnimations> graphs = new ArrayList<>();
         for (JSONObject sim: sims) {
             //Create animation in viewer
             Graph g = createGraphFromJson(sim);
             JLabel currentAgent = new JLabel("Still starting!");
-            JLabel totalCost = new JLabel("The total cost of the graph is: TODO");
+            JLabel totalCost = new JLabel("The total cost of the graph is: 0");
             List<String> agents = new LinkedList<>(((JSONObject) g.getEdge(0).getAttribute("usage")).keySet());
-            graphs.add(new runAnimations(g, sim.getInt("amountOfAgents"), agents, currentAgent, 5000));
+            graphs.add(new RunAnimations(g, sim.getInt("amountOfAgents"), agents, currentAgent, totalCost, 5000));
             //Make everything around the graph and it's animation
             JPanel graphPanel = new JPanel(new GridLayout()){
                 @Override

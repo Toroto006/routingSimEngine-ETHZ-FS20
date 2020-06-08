@@ -11,4 +11,5 @@ public interface CostFct {
 
     public Float getDerivativeCost();
 
+    public String toString(int withAgents);
 }
