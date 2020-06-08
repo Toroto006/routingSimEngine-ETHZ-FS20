@@ -4,6 +4,7 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.json.JSONObject;
 
+import javax.swing.*;
 import java.util.List;
 
 public class runAnimations extends Thread {
@@ -11,28 +12,30 @@ public class runAnimations extends Thread {
     private final Graph g;
     private final int usageAmount;
     private final List<String> agents;
+    private final JLabel currentAgent;
     private int totalAnimationTime;
 
-    public runAnimations(Graph g, int amountOfAgents, List<String> agents) {
+    public runAnimations(Graph g, int amountOfAgents, List<String> agents, JLabel currentAgent) {
         this.amountOfAgents = amountOfAgents;
         this.usageAmount = g.getAttribute("usageAmount");
         this.g = g;
         this.agents = agents;
         totalAnimationTime = 3000;
+        this.currentAgent = currentAgent;
     }
 
-    public runAnimations(Graph g, int amountOfAgents, List<String> agents, int totalAnimationTime) {
-        this(g, amountOfAgents, agents);
+    public runAnimations(Graph g, int amountOfAgents, List<String> agents, JLabel currentAgent, int totalAnimationTime) {
+        this(g, amountOfAgents, agents, currentAgent);
         this.totalAnimationTime = totalAnimationTime;
     }
 
     @Override
     public void run() {
-        g.display();
         try {
             Thread.sleep(500);
             while (true) {
                 for (String agent: agents) {
+                    currentAgent.setText(agent);
                     for (int i = 0; i < usageAmount; i++) {
                         updateAnimationAgent(g, agent, i);
                         Thread.sleep(totalAnimationTime/usageAmount);
