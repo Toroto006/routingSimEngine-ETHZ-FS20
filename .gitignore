@@ -24,11 +24,13 @@ hs_err_pid*
 .idea
 out
 /routingSimEngine.iml
-/networks/finishedRuns/*
-/networks/Simulation_out.json
+
 .gradle/*
 gradle/*
 
 # IDE settings #
 .idea/*
 .vscode/*
+
+# Output JSON's #
+*_out.json
