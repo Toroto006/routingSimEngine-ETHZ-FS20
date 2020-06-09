@@ -1,0 +1,214 @@
+{
+  "BraessParadoxSlow2": {
+    "amountOfAgents": 500,
+    "nodes": [
+      "a",
+      "v1",
+      "v2",
+      "w1",
+      "w2",
+      "z"
+    ],
+    "edges": [
+      {
+        "cost": "0.01*t+0.0",
+        "usage": {
+          "CentralizedAgent": [
+            0,
+            50,
+            100,
+            150,
+            156,
+            156,
+            156,
+            156,
+            156,
+            156,
+            156
+          ]
+        },
+        "connection": [
+          "a",
+          "v1"
+        ]
+      },
+      {
+        "cost": "0.01*t+0.0",
+        "usage": {
+          "CentralizedAgent": [
+            0,
+            0,
+            0,
+            0,
+            44,
+            94,
+            106,
+            106,
+            106,
+            106,
+            106
+          ]
+        },
+        "connection": [
+          "a",
+          "v2"
+        ]
+      },
+      {
+        "cost": "0.0*t+1.0",
+        "usage": {
+          "CentralizedAgent": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            38,
+            88,
+            138,
+            188,
+            238
+          ]
+        },
+        "connection": [
+          "a",
+          "w2"
+        ]
+      },
+      {
+        "cost": "0.0*t+0.0",
+        "usage": {
+          "CentralizedAgent": [
+            0,
+            25,
+            25,
+            25,
+            25,
+            25,
+            25,
+            25,
+            25,
+            25,
+            25
+          ]
+        },
+        "connection": [
+          "v1",
+          "w1"
+        ]
+      },
+      {
+        "cost": "0.01*t+0.0",
+        "usage": {
+          "CentralizedAgent": [
+            0,
+            25,
+            75,
+            125,
+            131,
+            131,
+            131,
+            131,
+            131,
+            131,
+            131
+          ]
+        },
+        "connection": [
+          "v1",
+          "z"
+        ]
+      },
+      {
+        "cost": "0.0*t+1.0",
+        "usage": {
+          "CentralizedAgent": [
+            0,
+            0,
+            0,
+            0,
+            44,
+            94,
+            106,
+            106,
+            106,
+            106,
+            106
+          ]
+        },
+        "connection": [
+          "v2",
+          "w1"
+        ]
+      },
+      {
+        "cost": "0.0*t+0.0",
+        "usage": {
+          "CentralizedAgent": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "connection": [
+          "v2",
+          "w2"
+        ]
+      },
+      {
+        "cost": "0.01*t+0.0",
+        "usage": {
+          "CentralizedAgent": [
+            0,
+            25,
+            25,
+            25,
+            69,
+            119,
+            131,
+            131,
+            131,
+            131,
+            131
+          ]
+        },
+        "connection": [
+          "w1",
+          "z"
+        ]
+      },
+      {
+        "cost": "0.01*t+0.0",
+        "usage": {
+          "CentralizedAgent": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            38,
+            88,
+            138,
+            188,
+            238
+          ]
+        },
+        "connection": [
+          "w2",
+          "z"
+        ]
+      }
+    ],
+    "networkTitle": "Brass's paradox n = 2 with center"
+  }
+}
