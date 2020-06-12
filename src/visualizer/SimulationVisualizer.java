@@ -47,10 +47,14 @@ public class SimulationVisualizer {
             ViewPanel viewPanel = viewer.addDefaultView(false);
             graphPanel.add(viewPanel);
             //Create legend panel
-            JPanel legend = new JPanel(new GridLayout(0, 1));
+            JPanel legend = new JPanel(new GridLayout(0, 2));
             currentAgent.setBounds(6, 6, 400, 60);
             legend.add(currentAgent);
+            legend.add(new JLabel("Colors: linear interpolation from green, orange to red"));
             legend.add(totalCost);
+            legend.add(new JLabel("        for the value (agents on the path)/(total amount of agents)"));
+            legend.add(new JLabel(""));
+            legend.add(new JLabel("TotalAmount of agents: " + sim.getInt("amountOfAgents")));
             //Combining everything
             JFrame simFrame = new JFrame();
             simFrame.setLayout(new BorderLayout());
@@ -61,6 +65,11 @@ public class SimulationVisualizer {
             simFrame.pack();
             simFrame.setLocationRelativeTo(null);
             simFrame.setVisible(true);
+        }
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
         for (Thread g: graphs)
             g.start();

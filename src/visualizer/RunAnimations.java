@@ -16,6 +16,8 @@ public class RunAnimations extends Thread {
     private final JLabel currentAgent;
     private final JLabel totalCost;
     private int totalAnimationTime;
+    //To show the full formula in on the graph
+    private boolean fullFormula = false;
 
     public RunAnimations(Graph g, int amountOfAgents, List<String> agents, JLabel currentAgent, JLabel totalCost) {
         this.amountOfAgents = amountOfAgents;
@@ -66,7 +68,7 @@ public class RunAnimations extends Thread {
             CostFct c = edge.getAttribute("costFct");
             double thisCost = usage * c.getCost(usage);
             totalCost += thisCost;
-            edge.setAttribute("ui.label", c.toString(usage));
+            edge.setAttribute("ui.label", fullFormula ? c.toString(usage) : usage);
             double color = usage*1.0/amountOfAgents;
             edge.setAttribute("ui.color", color);
         }
