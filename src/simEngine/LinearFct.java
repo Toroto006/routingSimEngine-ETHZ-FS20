@@ -19,6 +19,8 @@ public class LinearFct implements CostFct {
         return a*t + b;
     }
 
+    public Float[] getParameters() {return new Float[]{a, b};}
+
     @Override
     public Float getDerivativeCost() {
         return a;
