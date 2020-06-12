@@ -67,7 +67,7 @@ public class SimulationVisualizer {
             simFrame.setVisible(true);
         }
         try {
-            Thread.sleep(8000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -82,42 +82,4 @@ public class SimulationVisualizer {
             }
         }
     }
-
-    private static void testDrawing(Viewer v, Graph g) {
-        g.addAttribute("ui.agent", "agent { \tshape: box; \tsize: 100px, 100px; \tfill-mode: plain; \tfill-color: red;}");
-
-        ViewerPipe pipe = v.newViewerPipe();
-        pipe.addAttributeSink(g);
-
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        pipe.pump();
-        SpriteManager sman = new SpriteManager(g);
-        Sprite s1 = sman.addSprite("S1");
-        Sprite s2 = sman.addSprite("S2");
-        s1.addAttribute("ui.agent", "agent");
-        s2.addAttribute("ui.agent", "agent");
-        Node n1 = randomNode(g);
-        Node n2 = randomNode(g);
-        //System.out.println(n1.getId() + " and " + n2.getId());
-
-        for(int i = 0; i < 2000; i++) {
-            pipe.pump();
-            double p1[] = nodePosition(n1);
-            double p2[] = nodePosition(n2);
-            s1.setPosition(p1[0], p1[1], p1[2]);
-            s2.setPosition(p2[0], p2[1], p2[2]);
-            try {
-                Thread.sleep(15);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        System.out.println("done");
-    }
-
 }

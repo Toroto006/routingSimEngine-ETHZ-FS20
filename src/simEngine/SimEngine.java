@@ -3,7 +3,6 @@ package simEngine;
 import agents.CentralizedAgent;
 import agents.NetworkAgent;
 import agents.SelfishRoutingAgent;
-import agents.TaxedSelfishRoutingAgent;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -218,8 +217,8 @@ public class SimEngine {
     public static void main(String[] args) throws Exception {
         String SimulationName = "Simulation";
         //String[] networks = {"BraessParadoxFast1", "BraessParadoxSlow1", "Pigou", "BraessParadoxFast2", "BraessParadoxSlow2"};
-        //String[] networks = {"BraessParadoxSlow1-original"};
-        String[] networks = {"BraessParadoxSlow1"};
+        String[] networks = {"BraessParadoxSlow1-original"};
+        //String[] networks = {"BraessParadoxSlow1"};
         NetworkAgent[] agents = {
                 new SelfishRoutingAgent(),
                 //new TaxedSelfishRoutingAgent(),
