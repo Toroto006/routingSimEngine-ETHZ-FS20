@@ -16,7 +16,7 @@ public class VisualizerUtils {
 
     protected static String styleSheet =
             "edge {"+
-                    "	size: 3px;"+
+                    "	size: 4px;"+
                     "	fill-color: green, orange, red;"+
                     "	fill-mode: dyn-plain;"+
                     "	text-offset: 2;"+

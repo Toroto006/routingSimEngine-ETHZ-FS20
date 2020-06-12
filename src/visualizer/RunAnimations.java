@@ -48,7 +48,7 @@ public class RunAnimations extends Thread {
                         Thread.sleep(totalAnimationTime/usageAmount);
                     }
                     //Let the final setup up for a bit
-                    Thread.sleep(1000);
+                    Thread.sleep(4000);
                 }
             }
         } catch (InterruptedException e) {
