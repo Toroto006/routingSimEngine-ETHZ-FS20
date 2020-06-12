@@ -19,17 +19,24 @@ public class VisualizerUtils {
                     "	size: 3px;"+
                     "	fill-color: green, orange, red;"+
                     "	fill-mode: dyn-plain;"+
+                    "	text-offset: 2;"+
+                    "	text-size: 12;"+
                     "}"+
                     "node.start {"+
-                    "	size: 12px;"+
-                    "	fill-color: green;"+
+                    "	size: 10px;"+
+                    "	fill-color: #a2b555;"+
+                    "	text-style: bold;"+
+                    "	text-size: 14;"+
                     "}"+
                     "node.end {"+
-                    "	size: 12px;"+
-                    "	fill-color: blue;"+
+                    "	size: 10px;"+
+                    "	fill-color: #3f077a;"+
+                    "	text-style: bold;"+
+                    "	text-size: 14;"+
                     "}"+
                     "node {"+
                     "	size: 7px;"+
+                    "	text-offset: 6;"+
                     "	fill-color: #444;"+
                     "}";
 
@@ -92,7 +99,9 @@ public class VisualizerUtils {
         graph.getNode((String) nodes.get(0)).setAttribute("xy", 0, 0);
         graph.getNode((String) nodes.get(nodes.size()-1)).setAttribute("xy", 1, 0);
         graph.getNode((String) nodes.get(0)).addAttribute("ui.label", "Start");
+        graph.getNode((String) nodes.get(0)).addAttribute("ui.class", "start");
         graph.getNode((String) nodes.get(nodes.size()-1)).addAttribute("ui.label", "End");
+        graph.getNode((String) nodes.get(nodes.size()-1)).addAttribute("ui.class", "end");
         return graph;
     }
 }
