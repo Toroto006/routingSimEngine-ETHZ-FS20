@@ -221,11 +221,10 @@ public class SimEngine {
         String[] networks = {"BraessParadoxSlow1"};
         //String[] networks = {"BraessParadoxSlow1-original"};
         NetworkAgent[] agents = {
-                //new SelfishRoutingAgent(),
-                new TaxedSelfishRoutingAgent()
-                // ,
-                //new TaxedSelfishRoutingAgent(new LinearFct(2f, 1f), "TaxedClassSelfishRoutingAgent"),
-                //new CentralizedAgent()
+                new SelfishRoutingAgent(),
+                new TaxedSelfishRoutingAgent(),
+                new TaxedSelfishRoutingAgent(new LinearFct(2f, 1f), "TaxedClassSelfishRoutingAgent"),
+                new CentralizedAgent()
         };
         System.out.println("GameTheory simEngine.simEngine started!\n");
 
