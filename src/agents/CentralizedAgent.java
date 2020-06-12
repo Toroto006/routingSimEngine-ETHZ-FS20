@@ -1,5 +1,6 @@
 package agents;
 
+import scala.Int;
 import simEngine.EdgeCosts;
 import simEngine.NetworkCostGraph;
 
@@ -50,10 +51,20 @@ public class CentralizedAgent implements NetworkAgent {
         uniquePaths = getUniquePaths(ncg);
         nrUniquePaths = uniquePaths.size();
 
+
+        long startTime = System.nanoTime();
+
+
         // calculate all distribution costs
         distributionCost = new HashMap<Integer[], Double>();
         minDistVal = Float.MAX_VALUE;
         recDistributionCost(0, new Integer[nrUniquePaths], totAgents);
+
+        // the code you want to measure time for goes here
+        long endTime = System.nanoTime();
+        long elapsedNs = endTime - startTime;
+        double elapsedS = elapsedNs / 1.0e9;
+        System.out.println("It took " + elapsedS + " seconds to calculate.");
 
         /*// find minimal value of all distribution costs
         double min = Integer.MAX_VALUE;
@@ -100,6 +111,7 @@ public class CentralizedAgent implements NetworkAgent {
         if (current == nrUniquePaths-1) {
             distribution[current] = leftToDistribute;
             double currentDistVal = calcDistributionCost(distribution);
+            //double currentDistVal = totalLatency(distribution);
             // new minimal distribution found
             if (currentDistVal < minDistVal) {
                 distributionCost.clear();
@@ -288,5 +300,45 @@ public class CentralizedAgent implements NetworkAgent {
             distributionSum += distribution[i] * calcPathCost(uniquePaths.get(i), distribution);
         }
         return (distributionSum/totAgents);
+    }
+
+    /**
+     * Calculates total latency of a distribution
+     *
+     * @param distribution a distribution of agents over paths
+     * @return total latency
+     */
+    public Double totalLatency(Integer[] distribution) {
+        int[][] agents = new int[numVertices][numVertices];
+        double[][] latency = new double[numVertices][numVertices];
+
+        int i = 0;
+        for (LinkedList<Integer> path :
+             uniquePaths) {
+            Iterator<Integer> it = uniquePaths.get(i).listIterator();
+            if (path.isEmpty() || path.size() < 2) {
+                break;
+            }
+            int node1 = -1;
+            int node2 = it.next();
+            while (it.hasNext()) {
+                node1 = node2;
+                node2 = it.next();
+                agents[node1][node2] += distribution[i];
+            }
+            i++;
+        }
+
+        double totalLatency = 0;
+        for (int j = 0; j < numVertices; j++) {
+            for (int k = 0; k < numVertices; k++) {
+                if (ec.contains(j,k)) {
+                    latency[j][k] = ec.getEdgeCostCustomAgents(j,k,agents[j][k]);
+                    totalLatency += latency[j][k] * agents[j][k];
+                }
+            }
+        }
+        //need to get to proportional cost
+        return totalLatency/totAgents;
     }
 }
