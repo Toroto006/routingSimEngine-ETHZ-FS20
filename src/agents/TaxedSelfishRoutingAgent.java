@@ -1,10 +1,7 @@
 package agents;
 
 
-import org.chocosolver.solver.Model;
-import org.chocosolver.solver.Solution;
-import org.chocosolver.solver.variables.IntVar;
-import org.chocosolver.solver.variables.RealVar;
+import com.microsoft.z3.*;
 import simEngine.EdgeCosts;
 import simEngine.LinearFct;
 import simEngine.NetworkCostGraph;
@@ -38,71 +35,84 @@ public class TaxedSelfishRoutingAgent implements NetworkAgent {
 
 
     public void test() {
-        int n = 8;
-        Model model = new Model(n + "-queens problem");
-        IntVar[] vars = new IntVar[n];
-        for (int q = 0; q < n; q++) {
-            vars[q] = model.intVar("Q_" + q, 1, n);
-        }
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = i + 1; j < n; j++) {
-                model.arithm(vars[i], "!=", vars[j]).post();
-                model.arithm(vars[i], "!=", vars[j], "-", j - i).post();
-                model.arithm(vars[i], "!=", vars[j], "+", j - i).post();
-            }
-        }
-        Solution solution = model.getSolver().findSolution();
-        if (solution != null) {
-            System.out.println(solution.toString());
-        }
+        Context ctx = new Context();
+        RealExpr l = ctx.mkReal(0);
+        RealExpr u = ctx.mkReal(1);
+
+        RealExpr a = ctx.mkRealConst("a");
+        BoolExpr a1 = ctx.mkLe(a, u);
+        BoolExpr a2 = ctx.mkGe(a, l);
+        BoolExpr fa = ctx.mkAnd(a1, a2);
+
+        RealExpr b = ctx.mkRealConst("b");
+        BoolExpr b1 = ctx.mkLe(b, u);
+        BoolExpr b2 = ctx.mkGe(b, l);
+        BoolExpr fb = ctx.mkAnd(b1, b2);
+
+        BoolExpr bounds = ctx.mkAnd(fa, fb);
+
+        BoolExpr f1 = ctx.mkEq(ctx.mkAdd(ctx.mkMul(a, ctx.mkReal(1)), ctx.mkMul(b, ctx.mkReal(4))), ctx.mkReal(1));
+        BoolExpr f2 = ctx.mkEq(ctx.mkAdd(ctx.mkMul(a, ctx.mkReal(3)), ctx.mkMul(b, ctx.mkReal(4))), ctx.mkReal(2));
+        BoolExpr funcs = ctx.mkAnd(f1, f2);
+        Solver sol = ctx.mkSimpleSolver();
+        sol.add(bounds, funcs);
+        System.out.println(sol);
+        System.out.println(sol.check());
+        Model m = sol.getModel();
+        RatNum ta = ((RatNum) m.getConstInterp(a));
+        System.out.println("a = " + 1.0 / Integer.parseInt("" + ta.getDenominator()) * Integer.parseInt("" + ta.getNumerator()));
+        System.out.println("b = " + m.getConstInterp(b));
+
     }
 
     @Override
     public LinkedList<Integer> agentDecide(NetworkCostGraph ncg, EdgeCosts ec, int decidedAgents, int totalAgents) {
-        if (decidedAgents == 0 || solutions.isEmpty()) {
-            HashMap<String, LinkedList<Integer>> edges = new HashMap<>();
-            ArrayList<LinkedList<Integer>> uniquePaths = getUniquePaths(ncg);
-            int amountPaths = uniquePaths.size();
-
-
-            for (int p = 0; p < amountPaths; p++) {
-                LinkedList<Integer> path = uniquePaths.get(p);
-                Integer from = path.get(0);
-                for (int e = 1; e < path.size(); e++) {
-                    Integer to = path.get(e);
-                    if (!edges.containsKey(from + " " + to))
-                        edges.put(from + " " + to, new LinkedList<Integer>());
-                    edges.get(from + " " + to).add(p);
-
-                    from = to;
-                }
-            }
-
-            Model model = new Model(getName() + "-Routing-" + ncg.getClass().getSimpleName());
-            RealVar[] vars = new RealVar[amountPaths];
-            for (int q = 0; q < amountPaths; q++) {
-                vars[q] = model.realVar("p_" + q, 0d, 1d, PRECISION);
-            }
-            for (int p = 0; p < amountPaths; p++) {
-                LinkedList<Integer> path = uniquePaths.get(0);
-                Integer from = path.get(0);
-                for (int e = 1; e < path.size(); e++) {
-                    Integer to = path.get(e);
-                    LinkedList<Integer> edgeList = edges.get(from + " " + to);
-                    Float[] par = ec.getParameters(from, to);
-                    LinkedList<RealVar> ls = new LinkedList<>();
-                    for (Integer i : edgeList) {
-                        RealVar x1 = model.realVar(0d, MAXVALUE, PRECISION);
-                        //model.arithm(vars[p], "*", model.realVar(par[0]), "=", x1);
-                        RealVar temp = model.realVar("p:" + p + ",e:" + from + "-" + to, 0d, MAXVALUE, PRECISION);
-                        //model.sum(new RealVar[]{}, "=", )
-                        //ls.add();
-                    }
-                    from = to;
-
-                }
-            }
-        }
+        test();
+        exit(13);
+//        if (decidedAgents == 0 || solutions.isEmpty()) {
+//            HashMap<String, LinkedList<Integer>> edges = new HashMap<>();
+//            ArrayList<LinkedList<Integer>> uniquePaths = getUniquePaths(ncg);
+//            int amountPaths = uniquePaths.size();
+//
+//
+//            for (int p = 0; p < amountPaths; p++) {
+//                LinkedList<Integer> path = uniquePaths.get(p);
+//                Integer from = path.get(0);
+//                for (int e = 1; e < path.size(); e++) {
+//                    Integer to = path.get(e);
+//                    if (!edges.containsKey(from + " " + to))
+//                        edges.put(from + " " + to, new LinkedList<Integer>());
+//                    edges.get(from + " " + to).add(p);
+//
+//                    from = to;
+//                }
+//            }
+//
+//            Model model = new Model(getName() + "-Routing-" + ncg.getClass().getSimpleName());
+//            RealVar[] vars = new RealVar[amountPaths];
+//            for (int q = 0; q < amountPaths; q++) {
+//                vars[q] = model.realVar("p_" + q, 0d, 1d, PRECISION);
+//            }
+//            for (int p = 0; p < amountPaths; p++) {
+//                LinkedList<Integer> path = uniquePaths.get(0);
+//                Integer from = path.get(0);
+//                for (int e = 1; e < path.size(); e++) {
+//                    Integer to = path.get(e);
+//                    LinkedList<Integer> edgeList = edges.get(from + " " + to);
+//                    Float[] par = ec.getParameters(from, to);
+//                    LinkedList<RealVar> ls = new LinkedList<>();
+//                    for (Integer i : edgeList) {
+//                        RealVar x1 = model.realVar(0d, MAXVALUE, PRECISION);
+//                        //model.arithm(vars[p], "*", model.realVar(par[0]), "=", x1);
+//                        //RealVar temp = model.realVar("p:" + p + ",e:" + from + "-" + to, 0d, MAXVALUE, PRECISION);
+//                        //model.sum(new RealVar[]{}, "=", )
+//                        //ls.add();
+//                    }
+//                    from = to;
+//
+//                }
+//            }
+//        }
         exit(13);
         LinkedList<Integer> ret = new LinkedList<>();
         int last = ncg.getNumVertices() - 1;
@@ -197,8 +207,7 @@ public class TaxedSelfishRoutingAgent implements NetworkAgent {
      * @param s source node
      * @param d destination node
      */
-    public void printAllPaths(int s, int d)
-    {
+    public void printAllPaths(int s, int d) {
         boolean[] isVisited = new boolean[numVertices];
         ArrayList<Integer> pathList = new ArrayList<>();
 
@@ -219,9 +228,9 @@ public class TaxedSelfishRoutingAgent implements NetworkAgent {
     /**
      * A recursive function to print all paths from 'u' to 'd'.
      *
-     * @param u current node to find path from to d
-     * @param d destination node
-     * @param isVisited keeps track of visited nodes
+     * @param u             current node to find path from to d
+     * @param d             destination node
+     * @param isVisited     keeps track of visited nodes
      * @param localPathList current found path
      */
     private void printAllPathsUtil(Integer u, Integer d, boolean[] isVisited, List<Integer> localPathList) {
@@ -229,21 +238,18 @@ public class TaxedSelfishRoutingAgent implements NetworkAgent {
         // Mark the current node
         isVisited[u] = true;
 
-        if (u.equals(d))
-        {
+        if (u.equals(d)) {
             //System.out.println(localPathList);
             LinkedList<Integer> temp = new LinkedList<Integer>(localPathList);
             uniquePaths.add(temp);
             // if match found then no need to traverse more till depth
-            isVisited[u]= false;
-            return ;
+            isVisited[u] = false;
+            return;
         }
 
         // Recur for all the vertices adjacent to current vertex
-        for (Integer i : adjList[u])
-        {
-            if (!isVisited[i])
-            {
+        for (Integer i : adjList[u]) {
+            if (!isVisited[i]) {
                 // store current node
                 // in path[]
                 localPathList.add(i);
