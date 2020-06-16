@@ -93,10 +93,10 @@ public class TaxedSelfishRoutingAgent implements NetworkAgent {
                     LinkedList<RealVar> ls = new LinkedList<>();
                     for (Integer i : edgeList) {
                         RealVar x1 = model.realVar(0d, MAXVALUE, PRECISION);
-                        model.arithm(vars[p], "*", model.realVar(par[0]), "=", x1);
+                        //model.arithm(vars[p], "*", model.realVar(par[0]), "=", x1);
                         RealVar temp = model.realVar("p:" + p + ",e:" + from + "-" + to, 0d, MAXVALUE, PRECISION);
-                        model.sum(new RealVar[]{}, "=", )
-                        ls.add();
+                        //model.sum(new RealVar[]{}, "=", )
+                        //ls.add();
                     }
                     from = to;
 

@@ -34,3 +34,4 @@ gradle/*
 
 # Output JSON's #
 *_out.json
+/src/test/Tester.java
