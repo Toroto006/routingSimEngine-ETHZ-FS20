@@ -28,6 +28,11 @@ out
 .gradle/*
 gradle/*
 
+# z3 library #
+/libs/z3-4.8.8-x64-ubuntu-16.04/*
+/libs/z3-4.8.8-x64-win/*
+/libs/*z3*/*
+
 # IDE settings #
 .idea/*
 .vscode/*
