@@ -218,7 +218,7 @@ public class SimEngine {
     public static void main(String[] args) throws Exception {
         String SimulationName = "Simulation";
         //String[] networks = {"BraessParadoxFast1", "BraessParadoxSlow1", "Pigou", "BraessParadoxFast2", "BraessParadoxSlow2"};
-        String[] networks = {"BraessParadoxSlow1"};
+        String[] networks = {"TestNetwork4"};
         //String[] networks = {"BraessParadoxSlow1-original"};
         NetworkAgent[] agents = {
                 //new SelfishRoutingAgent(),

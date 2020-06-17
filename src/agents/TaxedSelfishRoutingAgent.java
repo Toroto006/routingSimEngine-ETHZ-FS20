@@ -25,9 +25,6 @@ public class TaxedSelfishRoutingAgent implements NetworkAgent {
     private ArrayList<LinkedList<Integer>> uniquePaths;
     private LinkedList<SolutionPath> solutions;
 
-    private final double PRECISION = 0.0001d;
-    private final double MAXVALUE = 100d;
-
     @Override
     public String getName() {
         return this.name;
@@ -37,7 +34,7 @@ public class TaxedSelfishRoutingAgent implements NetworkAgent {
     public void test() {
         Context ctx = new Context();
         RealExpr l = ctx.mkReal(0);
-        RealExpr u = ctx.mkReal(1);
+        RealExpr u = ctx.mkReal((long) 0.125);
 
         RealExpr a = ctx.mkRealConst("a");
         BoolExpr a1 = ctx.mkLe(a, u);
@@ -65,100 +62,131 @@ public class TaxedSelfishRoutingAgent implements NetworkAgent {
 
     }
 
+    private ArithExpr[] initVars(Context ctx, Solver sol, int amount, String name) {
+        ArithExpr[] out = new ArithExpr[amount];
+        RealExpr l = ctx.mkReal(0);
+        RealExpr u = ctx.mkReal(1);
+        ArithExpr last = ctx.mkReal(1);
+        for (int i = 0; i < amount - 1; i++) {
+            RealExpr ra = ctx.mkRealConst(name + "_" + (i));
+            BoolExpr ba1 = ctx.mkGe(ra, l);
+            BoolExpr ba2 = ctx.mkLe(ra, u);
+            BoolExpr aa = ctx.mkAnd(ba1, ba2);
+            out[i] = ra;
+            sol.add(aa);
+            ArithExpr next = ctx.mkSub(last, ra);
+            last = next;
+        }
+
+        BoolExpr l1 = ctx.mkGe(last, l);
+        BoolExpr l2 = ctx.mkLe(last, u);
+        BoolExpr al = ctx.mkAnd(l1, l2);
+        out[amount - 1] = last;
+        sol.add(al);
+        return out;
+    }
+
+    private static int gcd(int numerator, int denominator) {
+        return denominator == 0 ? numerator : gcd(denominator, numerator % denominator);
+    }
+
+    private RatNum doubleToRatNum(Context ctx, double number) {
+
+        String s = String.valueOf(number);
+        int digitsDec = s.length() - 1 - s.indexOf('.');
+        int denominator = 1;
+
+        for (int i = 0; i < digitsDec; i++) {
+            if(number == (int) number) break;
+            number *= 10;
+            denominator *= 10;
+        }
+
+        int numerator = (int) Math.round(number);
+        int gcd = gcd(numerator, denominator);
+
+        return ctx.mkReal((int) (numerator / gcd), (int) (denominator / gcd));
+    }
+
+    private double ratNumToDouble(RatNum number) {
+
+        return 1.0 / Integer.parseInt("" + number.getDenominator()) * Integer.parseInt("" + number.getNumerator());
+    }
+
     @Override
     public LinkedList<Integer> agentDecide(NetworkCostGraph ncg, EdgeCosts ec, int decidedAgents, int totalAgents) {
-        test();
-        exit(13);
-//        if (decidedAgents == 0 || solutions.isEmpty()) {
-//            HashMap<String, LinkedList<Integer>> edges = new HashMap<>();
-//            ArrayList<LinkedList<Integer>> uniquePaths = getUniquePaths(ncg);
-//            int amountPaths = uniquePaths.size();
-//
-//
-//            for (int p = 0; p < amountPaths; p++) {
-//                LinkedList<Integer> path = uniquePaths.get(p);
-//                Integer from = path.get(0);
-//                for (int e = 1; e < path.size(); e++) {
-//                    Integer to = path.get(e);
-//                    if (!edges.containsKey(from + " " + to))
-//                        edges.put(from + " " + to, new LinkedList<Integer>());
-//                    edges.get(from + " " + to).add(p);
-//
-//                    from = to;
-//                }
-//            }
-//
-//            Model model = new Model(getName() + "-Routing-" + ncg.getClass().getSimpleName());
-//            RealVar[] vars = new RealVar[amountPaths];
-//            for (int q = 0; q < amountPaths; q++) {
-//                vars[q] = model.realVar("p_" + q, 0d, 1d, PRECISION);
-//            }
-//            for (int p = 0; p < amountPaths; p++) {
-//                LinkedList<Integer> path = uniquePaths.get(0);
-//                Integer from = path.get(0);
-//                for (int e = 1; e < path.size(); e++) {
-//                    Integer to = path.get(e);
-//                    LinkedList<Integer> edgeList = edges.get(from + " " + to);
-//                    Float[] par = ec.getParameters(from, to);
-//                    LinkedList<RealVar> ls = new LinkedList<>();
-//                    for (Integer i : edgeList) {
-//                        RealVar x1 = model.realVar(0d, MAXVALUE, PRECISION);
-//                        //model.arithm(vars[p], "*", model.realVar(par[0]), "=", x1);
-//                        //RealVar temp = model.realVar("p:" + p + ",e:" + from + "-" + to, 0d, MAXVALUE, PRECISION);
-//                        //model.sum(new RealVar[]{}, "=", )
-//                        //ls.add();
-//                    }
-//                    from = to;
-//
-//                }
-//            }
-//        }
-        exit(13);
-        LinkedList<Integer> ret = new LinkedList<>();
-        int last = ncg.getNumVertices() - 1;
 
-        /* -- initialization -- */
-        cost = new double[last + 1];
-        predecessor = new int[last + 1];
-        LinkedList<Integer> nodesLeft = new LinkedList<>();
 
-        for (int i = 0; i <= last; i++) {
-            cost[i] = Integer.MAX_VALUE;
-            predecessor[i] = -1;
-            nodesLeft.add(i);
-        }
-        cost[0] = 0;
+        if (decidedAgents == 0 || solutions.isEmpty()) {
+            HashMap<String, ArithExpr> edges = new HashMap<>();
+            ArrayList<LinkedList<Integer>> uniquePaths = getUniquePaths(ncg);
+            int amountPaths = uniquePaths.size();
 
-        /* -- Cost calculation -- */
-        while (nodesLeft.size() > 0) {
-            int u = nodesLeft.getFirst();
-            for (int uu : nodesLeft) { //find next node with lowest cost
-                if (cost[uu] < cost[u]) {
-                    u = uu;
+            Context ctx = new Context();
+            Solver sol = ctx.mkSimpleSolver();
+            ArithExpr[] vars = initVars(ctx, sol, amountPaths, "p");
+            RealExpr cc = ctx.mkRealConst("cost");
+
+            for (int p = 0; p < amountPaths; p++) {
+                LinkedList<Integer> path = uniquePaths.get(p);
+                Integer from = path.get(0);
+                for (int e = 1; e < path.size(); e++) {
+                    Integer to = path.get(e);
+                    if (!edges.containsKey(from + " " + to))
+                        edges.put(from + " " + to, doubleToRatNum(ctx, ec.getEdgeCostCustomAgents(from, to, 0)));
+
+                    ArithExpr exp = edges.get(from + " " + to);
+
+                    // the variable cost is defined here
+                    ArithExpr cost = ctx.mkAdd(ctx.mkMul(vars[p], doubleToRatNum(ctx, ec.getDerivativeEdgeCost(from, to))), ctx.mkMul(vars[p], doubleToRatNum(ctx, ec.getDerivativeEdgeCost(from, to))));
+                    //ArithExpr cost = ctx.mkMul(vars[p], doubleToRatNum(ctx, ec.getDerivativeEdgeCost(from, to)));
+
+                    ArithExpr newExp = ctx.mkAdd(exp, cost);
+                    edges.put(from + " " + to, newExp);
+
+                    from = to;
                 }
             }
-            nodesLeft.remove(nodesLeft.indexOf(u));
-            if (u == last) {
-                nodesLeft.clear();
-            }
-            for (int v : nodesLeft
-            ) {
-                if (ec.contains(u, v)) {
-                    updateCost(u, v, ec);
+            for (int p = 0; p < amountPaths; p++) {
+                LinkedList<Integer> path = uniquePaths.get(p);
+                ArithExpr sum = ctx.mkReal(0);
+                Integer from = path.get(0);
+                for (int e = 1; e < path.size(); e++) {
+                    Integer to = path.get(e);
+                    ArithExpr exp = edges.get(from + " " + to);
+                    sum = ctx.mkAdd(sum, exp);
+                    from = to;
                 }
+                BoolExpr eq = ctx.mkEq(sum, cc);
+                sol.add(eq);
             }
+
+            //System.out.println(sol);
+            //System.out.println(sol.check());
+            sol.check();
+            Model m = sol.getModel();
+            solutions = new LinkedList<>();
+            for(int i = 0; i < amountPaths; i ++){
+                double percentage = ratNumToDouble((RatNum) m.eval(vars[i], false));
+                SolutionPath solPath = new SolutionPath(percentage, uniquePaths.get(i));
+                boolean add = solutions.add(solPath);
+                //System.out.println(vars[i].toString() + " = " + percentage);
+            }
+
         }
+        return chooseSolution(decidedAgents, totalAgents);
 
+    }
 
-        /* -- Backtracking -- */
-        int u = ncg.getNumVertices() - 1;
-        ret.add(u);
-        while (predecessor[u] >= 0) {
-            u = predecessor[u];
-            ret.addFirst(u);
+    private LinkedList<Integer> chooseSolution(int decidedAgents, int totalAgents) {
+        double rand = Math.random();
+        for(SolutionPath sol: solutions) {
+            if (rand < sol.getPercentage()){
+                return sol.getPath();
+            }
+            rand -= sol.getPercentage();
         }
-        return ret;
-
+        return null;
     }
 
     private void updateCost(int u, int v, EdgeCosts ec) {
