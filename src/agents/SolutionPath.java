@@ -16,6 +16,10 @@ public class SolutionPath {
         return percentage;
     }
 
+    public void changePercentage(double change) {
+        percentage += change;
+    }
+
     public LinkedList<Integer> getPath() {
         return path;
     }
