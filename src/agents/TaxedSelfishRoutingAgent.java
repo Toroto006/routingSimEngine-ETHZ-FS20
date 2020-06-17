@@ -24,7 +24,7 @@ public class TaxedSelfishRoutingAgent implements NetworkAgent {
 
         if (decidedAgents == 0 || solutions.isEmpty()) {
             ArrayList<LinkedList<Integer>> uniquePaths = AgentUtils.getUniquePaths(ncg);
-            calculateSolution(uniquePaths, ec);
+            calculateSolution(uniquePaths, ec, totalAgents);
         }
         return chooseSolution(decidedAgents, totalAgents);
     }
@@ -35,7 +35,7 @@ public class TaxedSelfishRoutingAgent implements NetworkAgent {
      * @param uniquePaths A list of all unique paths
      * @param ec          The object so that the method can look up the cost of edges
      */
-    private void calculateSolution(ArrayList<LinkedList<Integer>> uniquePaths, EdgeCosts ec) {
+    private void calculateSolution(ArrayList<LinkedList<Integer>> uniquePaths, EdgeCosts ec, int totalAgents) {
         HashMap<String, ArithExpr> edges = new HashMap<>();
         int amountPaths = uniquePaths.size();
 
@@ -55,8 +55,7 @@ public class TaxedSelfishRoutingAgent implements NetworkAgent {
                 ArithExpr exp = edges.get(from + " " + to);
 
                 // the variable cost is defined here
-                ArithExpr cost = ctx.mkAdd(ctx.mkMul(vars[p], AgentUtils.doubleToRatNum(ctx, ec.getDerivativeEdgeCost(from, to))), ctx.mkMul(vars[p], AgentUtils.doubleToRatNum(ctx, ec.getDerivativeEdgeCost(from, to))));
-                //ArithExpr cost = ctx.mkMul(vars[p], AgentUtils.doubleToRatNum(ctx, ec.getDerivativeEdgeCost(from, to)));
+                ArithExpr cost = ctx.mkAdd(ctx.mkMul(vars[p], AgentUtils.doubleToRatNum(ctx, ec.getDerivativeEdgeCost(from, to) * totalAgents)));
 
                 ArithExpr newExp = ctx.mkAdd(exp, cost);
                 edges.put(from + " " + to, newExp);
